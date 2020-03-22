@@ -176,6 +176,9 @@ void IDT::Initialize()
     gIDTPointer.Limit = (sizeof (Entry) * 256) - 1;
     gIDTPointer.Base = (uint32_t)&gIDT;
     idt_load();
+    
+    // enable IRQs
+    asm("sti");
 }
 
 void IDT::AddIRQHandler(const eIRQ type, const InterruptHandler handler)

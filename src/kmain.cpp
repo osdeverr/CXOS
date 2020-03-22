@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <itoa.h>
 #include <ioports.h>
+#include <keyboard.h>
 
 typedef struct multiboot_memory_map {
     unsigned int size;
@@ -30,9 +31,10 @@ private:
 
 void CXMain(multiboot_info_t* mbt)
 {
+    Console::Initialize();
     GDT::Initialize();
     IDT::Initialize();
-    Console::Initialize();
+    Keyboard::Initialize();
     
     mmap_entry_t* entry = (mmap_entry_t*) mbt->mmap_addr;\
     
@@ -51,16 +53,9 @@ void CXMain(multiboot_info_t* mbt)
             Panic::Halt("Breakpoint hit in kernel");
         }
     );
-    
-    IDT::AddIRQHandler(IDT::eIRQ_PS2Keyboard,
-        [](const IDT::RegisterState& regs) {
-            if(IOPorts::In<uint8_t>(0x60) == 0x22)
-                asm("int $3");
-        }
-    );
-    
+
     while(1)
-        asm("sti");
+        Console::Write(uint8_t(Keyboard::ReadChar()));
 }
 
 extern "C" void kmain(int b, multiboot_info_t* pMBInfo)
