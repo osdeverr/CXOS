@@ -6,11 +6,100 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5FF3A94024276B470065AE01 /* test.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92624266E360065AE01 /* test.asm */; };
+		5FF3A94124276B470065AE01 /* kmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92724266E360065AE01 /* kmain.cpp */; };
+		5FF3A94224276B470065AE01 /* kprint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92A242670100065AE01 /* kprint.cpp */; };
+		5FF3A94324276B470065AE01 /* lgdt.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92F242676780065AE01 /* lgdt.asm */; };
+		5FF3A94424276B470065AE01 /* gdt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A9312426A1810065AE01 /* gdt.cpp */; };
+		5FF3A94524276B4B0065AE01 /* mbootmain.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92524266E360065AE01 /* mbootmain.asm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5FF3A93624276B1D0065AE01 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		5FF3A92524266E360065AE01 /* mbootmain.asm */ = {isa = PBXFileReference; explicitFileType = sourcecode.asm; path = mbootmain.asm; sourceTree = "<group>"; };
+		5FF3A92624266E360065AE01 /* test.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = test.asm; sourceTree = "<group>"; };
+		5FF3A92724266E360065AE01 /* kmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kmain.cpp; sourceTree = "<group>"; };
+		5FF3A92824266EAF0065AE01 /* Makefile */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = Makefile; sourceTree = "<group>"; usesTabs = 1; };
+		5FF3A929242670100065AE01 /* kprint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kprint.h; sourceTree = "<group>"; };
+		5FF3A92A242670100065AE01 /* kprint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kprint.cpp; sourceTree = "<group>"; };
+		5FF3A92C242673F20065AE01 /* gdt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdt.h; sourceTree = "<group>"; };
+		5FF3A92E2426740A0065AE01 /* stdint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdint.h; sourceTree = "<group>"; };
+		5FF3A92F242676780065AE01 /* lgdt.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = lgdt.asm; sourceTree = "<group>"; };
+		5FF3A9312426A1810065AE01 /* gdt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gdt.cpp; sourceTree = "<group>"; };
+		5FF3A9322426A2720065AE01 /* link.ld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = link.ld; sourceTree = "<group>"; };
+		5FF3A93824276B1D0065AE01 /* kernel-codebase */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "kernel-codebase"; path = "/Users/osdever/Documents/XCode/cxkrnltest/build/Debug/kernel-codebase"; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5FF3A93524276B1D0065AE01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
 		5FF3A91724266DDC0065AE01 = {
 			isa = PBXGroup;
 			children = (
+				5FF3A9332426A2770065AE01 /* system */,
+				5FF3A92B2426708F0065AE01 /* include */,
+				5FF3A92324266E360065AE01 /* src */,
 			);
+			sourceTree = "<group>";
+		};
+		5FF3A92324266E360065AE01 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				5FF3A92424266E360065AE01 /* mbootmain */,
+				5FF3A92624266E360065AE01 /* test.asm */,
+				5FF3A92724266E360065AE01 /* kmain.cpp */,
+				5FF3A92A242670100065AE01 /* kprint.cpp */,
+				5FF3A92F242676780065AE01 /* lgdt.asm */,
+				5FF3A9312426A1810065AE01 /* gdt.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		5FF3A92424266E360065AE01 /* mbootmain */ = {
+			isa = PBXGroup;
+			children = (
+				5FF3A92524266E360065AE01 /* mbootmain.asm */,
+			);
+			path = mbootmain;
+			sourceTree = "<group>";
+		};
+		5FF3A92B2426708F0065AE01 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				5FF3A92E2426740A0065AE01 /* stdint.h */,
+				5FF3A92C242673F20065AE01 /* gdt.h */,
+				5FF3A929242670100065AE01 /* kprint.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		5FF3A9332426A2770065AE01 /* system */ = {
+			isa = PBXGroup;
+			children = (
+				5FF3A92824266EAF0065AE01 /* Makefile */,
+				5FF3A9322426A2720065AE01 /* link.ld */,
+			);
+			name = system;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -23,6 +112,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = /Users/osdever/Documents/XCode/cxkrnltest;
 			dependencies = (
 			);
 			name = cxkrnltest;
@@ -30,6 +120,26 @@
 			productName = cxkrnltest;
 		};
 /* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		5FF3A93724276B1D0065AE01 /* kernel-codebase */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5FF3A93D24276B1D0065AE01 /* Build configuration list for PBXNativeTarget "kernel-codebase" */;
+			buildPhases = (
+				5FF3A93424276B1D0065AE01 /* Sources */,
+				5FF3A93524276B1D0065AE01 /* Frameworks */,
+				5FF3A93624276B1D0065AE01 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "kernel-codebase";
+			productName = "kernel-codebase";
+			productReference = 5FF3A93824276B1D0065AE01 /* kernel-codebase */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		5FF3A91824266DDC0065AE01 /* Project object */ = {
@@ -39,6 +149,9 @@
 				ORGANIZATIONNAME = PlakOS;
 				TargetAttributes = {
 					5FF3A91C24266DDC0065AE01 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					5FF3A93724276B1D0065AE01 = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
@@ -51,13 +164,31 @@
 				en,
 			);
 			mainGroup = 5FF3A91724266DDC0065AE01;
+			productRefGroup = 5FF3A91724266DDC0065AE01;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				5FF3A91C24266DDC0065AE01 /* cxkrnltest */,
+				5FF3A93724276B1D0065AE01 /* kernel-codebase */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5FF3A93424276B1D0065AE01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5FF3A94524276B4B0065AE01 /* mbootmain.asm in Sources */,
+				5FF3A94124276B470065AE01 /* kmain.cpp in Sources */,
+				5FF3A94024276B470065AE01 /* test.asm in Sources */,
+				5FF3A94424276B470065AE01 /* gdt.cpp in Sources */,
+				5FF3A94324276B470065AE01 /* lgdt.asm in Sources */,
+				5FF3A94224276B470065AE01 /* kprint.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		5FF3A91D24266DDC0065AE01 /* Debug */ = {
@@ -192,6 +323,30 @@
 			};
 			name = Release;
 		};
+		5FF3A93E24276B1D0065AE01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3J2JYTDMYQ;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		5FF3A93F24276B1D0065AE01 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3J2JYTDMYQ;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -209,6 +364,15 @@
 			buildConfigurations = (
 				5FF3A92024266DDC0065AE01 /* Debug */,
 				5FF3A92124266DDC0065AE01 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5FF3A93D24276B1D0065AE01 /* Build configuration list for PBXNativeTarget "kernel-codebase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FF3A93E24276B1D0065AE01 /* Debug */,
+				5FF3A93F24276B1D0065AE01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
