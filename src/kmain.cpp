@@ -1,5 +1,6 @@
 #include <console.h>
 #include <gdt.h>
+#include <idt.h>
 #include <multiboot.h>
 #include <memory.h>
 #include <assert.h>
@@ -20,7 +21,7 @@ typedef multiboot_memory_map_t mmap_entry_t;
 class Plak
 {
 public:
-    Plak() : msg("ky & plaks") {}
+    Plak() : msg("ky & plaks\n") {}
     void Show() { Console::Write(msg); }
 private:
     const char* msg = nullptr;
@@ -29,6 +30,7 @@ private:
 void CXMain(multiboot_info_t* mbt)
 {
     GDT::Initialize();
+    IDT::Initialize();
     Console::Initialize();
     
     mmap_entry_t* entry = (mmap_entry_t*) mbt->mmap_addr;\
@@ -43,6 +45,20 @@ void CXMain(multiboot_info_t* mbt)
     
     Plak* pPlak = new Plak;
     pPlak->Show();
+    IDT::AddFaultHandler(IDT::eFault_Breakpoint,
+        [](const IDT::RegisterState& regs) {
+            Panic::Halt("Breakpoint hit in kernel");
+        }
+    );
+    
+    IDT::AddIRQHandler(IDT::eIRQ_PS2Keyboard,
+        [](const IDT::RegisterState& regs) {
+            Console::Write("Keybaord lol ");
+        }
+    );
+    
+    while(1)
+        asm("sti");
 }
 
 extern "C" void kmain(int b, multiboot_info_t* pMBInfo)

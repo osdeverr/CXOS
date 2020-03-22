@@ -17,6 +17,8 @@
 		5FF3A95A2427890E0065AE01 /* panic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A9592427890E0065AE01 /* panic.cpp */; };
 		5FF3A95E242793CB0065AE01 /* itoa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A95D242793CB0065AE01 /* itoa.cpp */; };
 		5FF3A96024279C500065AE01 /* cxxnew.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A95F24279C500065AE01 /* cxxnew.cpp */; };
+		5FF3A9632427A9AB0065AE01 /* idt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A9622427A9AB0065AE01 /* idt.cpp */; };
+		5FF3A9672427AC0D0065AE01 /* idt.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A9662427AC0D0065AE01 /* idt.asm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -54,6 +56,9 @@
 		5FF3A95C242793BF0065AE01 /* itoa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = itoa.h; sourceTree = "<group>"; };
 		5FF3A95D242793CB0065AE01 /* itoa.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = itoa.cpp; sourceTree = "<group>"; };
 		5FF3A95F24279C500065AE01 /* cxxnew.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cxxnew.cpp; sourceTree = "<group>"; };
+		5FF3A9612427A2050065AE01 /* idt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = idt.h; sourceTree = "<group>"; };
+		5FF3A9622427A9AB0065AE01 /* idt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = idt.cpp; sourceTree = "<group>"; };
+		5FF3A9662427AC0D0065AE01 /* idt.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = idt.asm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,8 +107,9 @@
 			children = (
 				5FF3A951242774470065AE01 /* i386 */,
 				5FF3A92E2426740A0065AE01 /* stdint.h */,
-				5FF3A94A24276CD90065AE01 /* console.h */,
 				5FF3A92C242673F20065AE01 /* gdt.h */,
+				5FF3A9612427A2050065AE01 /* idt.h */,
+				5FF3A94A24276CD90065AE01 /* console.h */,
 				5FF3A95324277D5E0065AE01 /* multiboot.h */,
 				5FF3A954242782840065AE01 /* memory.h */,
 				5FF3A9572427865D0065AE01 /* tlist.h */,
@@ -131,6 +137,8 @@
 				5FF3A94C24276E510065AE01 /* console.cpp */,
 				5FF3A955242782D40065AE01 /* memory.cpp */,
 				5FF3A9592427890E0065AE01 /* panic.cpp */,
+				5FF3A9622427A9AB0065AE01 /* idt.cpp */,
+				5FF3A9662427AC0D0065AE01 /* idt.asm */,
 			);
 			path = i386;
 			sourceTree = "<group>";
@@ -232,10 +240,12 @@
 				5FF3A95E242793CB0065AE01 /* itoa.cpp in Sources */,
 				5FF3A94424276B470065AE01 /* gdt.cpp in Sources */,
 				5FF3A94324276B470065AE01 /* lgdt.asm in Sources */,
+				5FF3A9672427AC0D0065AE01 /* idt.asm in Sources */,
 				5FF3A94D24276E510065AE01 /* console.cpp in Sources */,
 				5FF3A96024279C500065AE01 /* cxxnew.cpp in Sources */,
 				5FF3A95A2427890E0065AE01 /* panic.cpp in Sources */,
 				5FF3A956242782D40065AE01 /* memory.cpp in Sources */,
+				5FF3A9632427A9AB0065AE01 /* idt.cpp in Sources */,
 				5FF3A94624276C7E0065AE01 /* stdint.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
