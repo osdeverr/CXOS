@@ -7,7 +7,7 @@
 //
 
 #include <idt.h>
-#include <i386/ioports.h>
+#include <ioports.h>
 #include <console.h>
 #include <itoa.h>
 

@@ -7,7 +7,7 @@
 //
 
 #include <console.h>
-#include <i386/ioports.h>
+#include <ioports.h>
 
 namespace VGAConsoleImpl
 {

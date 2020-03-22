@@ -4,7 +4,8 @@
 #include <multiboot.h>
 #include <memory.h>
 #include <assert.h>
-#include <itoa.h> 
+#include <itoa.h>
+#include <ioports.h>
 
 typedef struct multiboot_memory_map {
     unsigned int size;
@@ -53,7 +54,8 @@ void CXMain(multiboot_info_t* mbt)
     
     IDT::AddIRQHandler(IDT::eIRQ_PS2Keyboard,
         [](const IDT::RegisterState& regs) {
-            Console::Write("Keybaord lol ");
+            if(IOPorts::In<uint8_t>(0x60) == 0x22)
+                asm("int $3");
         }
     );
     
