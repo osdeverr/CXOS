@@ -1,6 +1,6 @@
 //
 //  gdt.c
-//  cxkrnltest
+//  kernel-codebase
 //
 //  Created by Nikita Ivanov on 3/21/20.
 //  Copyright © 2020 PlakOS. All rights reserved.

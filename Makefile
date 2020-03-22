@@ -3,7 +3,7 @@ BINFORMAT   := elf
 CROSSBIN    := /opt/elf-cross/bin/
 CC          := $(CROSSBIN)/$(ARCH)-$(BINFORMAT)-gcc
 CXX         := $(CROSSBIN)/$(ARCH)-$(BINFORMAT)-g++
-CFLAGS      := -ffreestanding -nostdlib -Dtest=$(ACT)
+CFLAGS      := -ffreestanding -nostdlib -DCXK_ARCH=$(ARCH)
 SRC_DIR     := src
 OBJ_DIR     := obj
 INCLUDE_DIR := include
@@ -17,11 +17,13 @@ LD	        := $(CROSSBIN)$(ARCH)-$(BINFORMAT)-ld
 SOURCES := $(wildcard $(SRC_DIR)/*.asm)
 SOURCES += $(wildcard $(SRC_DIR)/*.c)
 SOURCES += $(wildcard $(SRC_DIR)/*.cpp)
+SOURCES += $(wildcard $(SRC_DIR)/$(ARCH)/*.asm)
+SOURCES += $(wildcard $(SRC_DIR)/$(ARCH)/*.c)
+SOURCES += $(wildcard $(SRC_DIR)/$(ARCH)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%, $(OBJ_DIR)/%.o, $(SOURCES))
 
 all: $(OBJECTS)
 	$(ASM) -f elf $(MBOOTLDR) -o $(MBOOTOBJ)
-	$(ASM) -f elf src/lgdt.asm -o obj/lgdt.o
 	$(LD) -T $(LDSCRIPT) $(MBOOTOBJ) $^ -o $(KRNLPATH)
 	qemu-system-i386 -kernel $(KRNLPATH)
 

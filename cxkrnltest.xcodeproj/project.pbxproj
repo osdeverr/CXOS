@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5FF3A94024276B470065AE01 /* test.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92624266E360065AE01 /* test.asm */; };
 		5FF3A94124276B470065AE01 /* kmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92724266E360065AE01 /* kmain.cpp */; };
-		5FF3A94224276B470065AE01 /* kprint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92A242670100065AE01 /* kprint.cpp */; };
 		5FF3A94324276B470065AE01 /* lgdt.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92F242676780065AE01 /* lgdt.asm */; };
 		5FF3A94424276B470065AE01 /* gdt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A9312426A1810065AE01 /* gdt.cpp */; };
 		5FF3A94524276B4B0065AE01 /* mbootmain.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92524266E360065AE01 /* mbootmain.asm */; };
+		5FF3A94624276C7E0065AE01 /* stdint.h in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A92E2426740A0065AE01 /* stdint.h */; };
+		5FF3A94D24276E510065AE01 /* console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A94C24276E510065AE01 /* console.cpp */; };
+		5FF3A956242782D40065AE01 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A955242782D40065AE01 /* memory.cpp */; };
+		5FF3A95A2427890E0065AE01 /* panic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A9592427890E0065AE01 /* panic.cpp */; };
+		5FF3A95E242793CB0065AE01 /* itoa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A95D242793CB0065AE01 /* itoa.cpp */; };
+		5FF3A96024279C500065AE01 /* cxxnew.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3A95F24279C500065AE01 /* cxxnew.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,17 +33,27 @@
 
 /* Begin PBXFileReference section */
 		5FF3A92524266E360065AE01 /* mbootmain.asm */ = {isa = PBXFileReference; explicitFileType = sourcecode.asm; path = mbootmain.asm; sourceTree = "<group>"; };
-		5FF3A92624266E360065AE01 /* test.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = test.asm; sourceTree = "<group>"; };
 		5FF3A92724266E360065AE01 /* kmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kmain.cpp; sourceTree = "<group>"; };
 		5FF3A92824266EAF0065AE01 /* Makefile */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = Makefile; sourceTree = "<group>"; usesTabs = 1; };
-		5FF3A929242670100065AE01 /* kprint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kprint.h; sourceTree = "<group>"; };
-		5FF3A92A242670100065AE01 /* kprint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kprint.cpp; sourceTree = "<group>"; };
-		5FF3A92C242673F20065AE01 /* gdt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdt.h; sourceTree = "<group>"; };
-		5FF3A92E2426740A0065AE01 /* stdint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdint.h; sourceTree = "<group>"; };
+		5FF3A92C242673F20065AE01 /* gdt.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = gdt.h; sourceTree = "<group>"; };
+		5FF3A92E2426740A0065AE01 /* stdint.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = stdint.h; sourceTree = "<group>"; };
 		5FF3A92F242676780065AE01 /* lgdt.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = lgdt.asm; sourceTree = "<group>"; };
 		5FF3A9312426A1810065AE01 /* gdt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gdt.cpp; sourceTree = "<group>"; };
 		5FF3A9322426A2720065AE01 /* link.ld */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = link.ld; sourceTree = "<group>"; };
 		5FF3A93824276B1D0065AE01 /* kernel-codebase */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "kernel-codebase"; path = "/Users/osdever/Documents/XCode/cxkrnltest/build/Debug/kernel-codebase"; sourceTree = "<absolute>"; };
+		5FF3A94A24276CD90065AE01 /* console.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = console.h; sourceTree = "<group>"; };
+		5FF3A94C24276E510065AE01 /* console.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = console.cpp; sourceTree = "<group>"; };
+		5FF3A94E242771D70065AE01 /* ioports.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ioports.h; sourceTree = "<group>"; };
+		5FF3A95324277D5E0065AE01 /* multiboot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = multiboot.h; sourceTree = "<group>"; };
+		5FF3A954242782840065AE01 /* memory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = memory.h; sourceTree = "<group>"; };
+		5FF3A955242782D40065AE01 /* memory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = memory.cpp; sourceTree = "<group>"; };
+		5FF3A9572427865D0065AE01 /* tlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tlist.h; sourceTree = "<group>"; };
+		5FF3A958242788DD0065AE01 /* panic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = panic.h; sourceTree = "<group>"; };
+		5FF3A9592427890E0065AE01 /* panic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = panic.cpp; sourceTree = "<group>"; };
+		5FF3A95B242789BA0065AE01 /* assert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = assert.h; sourceTree = "<group>"; };
+		5FF3A95C242793BF0065AE01 /* itoa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = itoa.h; sourceTree = "<group>"; };
+		5FF3A95D242793CB0065AE01 /* itoa.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = itoa.cpp; sourceTree = "<group>"; };
+		5FF3A95F24279C500065AE01 /* cxxnew.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cxxnew.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,12 +79,12 @@
 		5FF3A92324266E360065AE01 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				5FF3A9522427763C0065AE01 /* vfs */,
+				5FF3A94B24276D500065AE01 /* i386 */,
 				5FF3A92424266E360065AE01 /* mbootmain */,
-				5FF3A92624266E360065AE01 /* test.asm */,
 				5FF3A92724266E360065AE01 /* kmain.cpp */,
-				5FF3A92A242670100065AE01 /* kprint.cpp */,
-				5FF3A92F242676780065AE01 /* lgdt.asm */,
-				5FF3A9312426A1810065AE01 /* gdt.cpp */,
+				5FF3A95F24279C500065AE01 /* cxxnew.cpp */,
+				5FF3A95D242793CB0065AE01 /* itoa.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -86,9 +100,16 @@
 		5FF3A92B2426708F0065AE01 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				5FF3A951242774470065AE01 /* i386 */,
 				5FF3A92E2426740A0065AE01 /* stdint.h */,
+				5FF3A94A24276CD90065AE01 /* console.h */,
 				5FF3A92C242673F20065AE01 /* gdt.h */,
-				5FF3A929242670100065AE01 /* kprint.h */,
+				5FF3A95324277D5E0065AE01 /* multiboot.h */,
+				5FF3A954242782840065AE01 /* memory.h */,
+				5FF3A9572427865D0065AE01 /* tlist.h */,
+				5FF3A958242788DD0065AE01 /* panic.h */,
+				5FF3A95B242789BA0065AE01 /* assert.h */,
+				5FF3A95C242793BF0065AE01 /* itoa.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -100,6 +121,33 @@
 				5FF3A9322426A2720065AE01 /* link.ld */,
 			);
 			name = system;
+			sourceTree = "<group>";
+		};
+		5FF3A94B24276D500065AE01 /* i386 */ = {
+			isa = PBXGroup;
+			children = (
+				5FF3A9312426A1810065AE01 /* gdt.cpp */,
+				5FF3A92F242676780065AE01 /* lgdt.asm */,
+				5FF3A94C24276E510065AE01 /* console.cpp */,
+				5FF3A955242782D40065AE01 /* memory.cpp */,
+				5FF3A9592427890E0065AE01 /* panic.cpp */,
+			);
+			path = i386;
+			sourceTree = "<group>";
+		};
+		5FF3A951242774470065AE01 /* i386 */ = {
+			isa = PBXGroup;
+			children = (
+				5FF3A94E242771D70065AE01 /* ioports.h */,
+			);
+			path = i386;
+			sourceTree = "<group>";
+		};
+		5FF3A9522427763C0065AE01 /* vfs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = vfs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,10 +229,14 @@
 			files = (
 				5FF3A94524276B4B0065AE01 /* mbootmain.asm in Sources */,
 				5FF3A94124276B470065AE01 /* kmain.cpp in Sources */,
-				5FF3A94024276B470065AE01 /* test.asm in Sources */,
+				5FF3A95E242793CB0065AE01 /* itoa.cpp in Sources */,
 				5FF3A94424276B470065AE01 /* gdt.cpp in Sources */,
 				5FF3A94324276B470065AE01 /* lgdt.asm in Sources */,
-				5FF3A94224276B470065AE01 /* kprint.cpp in Sources */,
+				5FF3A94D24276E510065AE01 /* console.cpp in Sources */,
+				5FF3A96024279C500065AE01 /* cxxnew.cpp in Sources */,
+				5FF3A95A2427890E0065AE01 /* panic.cpp in Sources */,
+				5FF3A956242782D40065AE01 /* memory.cpp in Sources */,
+				5FF3A94624276C7E0065AE01 /* stdint.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
