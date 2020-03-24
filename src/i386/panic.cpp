@@ -14,5 +14,6 @@ void Panic::Halt(const char* reason)
     Console::Write("panic(): ");
     Console::Write(reason);
     Console::Write("\nhalting execution");
+    asm("cli");
     asm("hlt");
 }

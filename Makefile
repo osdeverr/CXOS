@@ -3,7 +3,7 @@ BINFORMAT   := elf
 CROSSBIN    := /opt/elf-cross/bin/
 CC          := $(CROSSBIN)/$(ARCH)-$(BINFORMAT)-gcc
 CXX         := $(CROSSBIN)/$(ARCH)-$(BINFORMAT)-g++
-CFLAGS      := -ffreestanding -nostdlib -DCXK_ARCH=$(ARCH)
+CFLAGS      := -std=c++17 -ffreestanding -fno-exceptions -fno-rtti -nostdlib -DCXK_ARCH=$(ARCH)
 SRC_DIR     := src
 OBJ_DIR     := obj
 INCLUDE_DIR := include
@@ -25,12 +25,12 @@ OBJECTS := $(patsubst $(SRC_DIR)/%, $(OBJ_DIR)/%.o, $(SOURCES))
 all: $(OBJECTS)
 	$(ASM) -f elf $(MBOOTLDR) -o $(MBOOTOBJ)
 	$(LD) -T $(LDSCRIPT) $(MBOOTOBJ) $^ -o $(KRNLPATH)
-	qemu-system-i386 -kernel $(KRNLPATH)
+	qemu-system-i386 -m 256M -kernel $(KRNLPATH)
 
 $(OBJ_DIR)/%.c.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -I$(SRC_DIR) -I$(INCLUDE_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(SRC_DIR) -I$(INCLUDE_DIR) -I$(INCLUDE_DIR)/dwstd -c $< -o $@
 $(OBJ_DIR)/%.cpp.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CFLAGS) -I$(SRC_DIR) -I$(INCLUDE_DIR) -c $< -o $@
+	$(CXX) $(CFLAGS) -I$(SRC_DIR) -I$(INCLUDE_DIR) -I$(INCLUDE_DIR)/dwstd -c $< -o $@
 $(OBJ_DIR)/%.asm.o: $(SRC_DIR)/%.asm
 	$(ASM) -f elf $< -o $@
 								 

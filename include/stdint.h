@@ -121,6 +121,14 @@ typedef unsigned long long uintmax_t;
 #define INTMAX_C(x)  INT64_C(x)
 #define UINTMAX_C(x) UINT64_C(x)
 
+typedef int* intptr_t;
+typedef unsigned int* uintptr_t;
+
+namespace std
+{
+    typedef uint32_t size_t;
+}
+
 /*
  * Copyright (c) 1992-2012 by P.J. Plauger.  ALL RIGHTS RESERVED.
  * Consult your license regarding permissions and restrictions.

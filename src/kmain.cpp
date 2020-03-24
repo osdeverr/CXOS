@@ -7,6 +7,8 @@
 #include <itoa.h>
 #include <ioports.h>
 #include <keyboard.h>
+#include <fs/root.h>
+#include <tlist.h>
 
 typedef struct multiboot_memory_map {
     unsigned int size;
@@ -36,6 +38,7 @@ void CXMain(multiboot_info_t* mbt)
     IDT::Initialize();
     Keyboard::Initialize();
     
+    Console::Write("Yers\n");
     mmap_entry_t* entry = (mmap_entry_t*) mbt->mmap_addr;\
     
     while((unsigned int) entry < mbt->mmap_addr + mbt->mmap_length) {
@@ -45,9 +48,9 @@ void CXMain(multiboot_info_t* mbt)
         }
         entry = (mmap_entry_t*) ((unsigned int) entry + entry->size + sizeof(entry->size));
     }
-    
     Plak* pPlak = new Plak;
     pPlak->Show();
+    
     IDT::AddFaultHandler(IDT::eFault_Breakpoint,
         [](const IDT::RegisterState& regs) {
             Panic::Halt("Breakpoint hit in kernel");

@@ -28,32 +28,7 @@ void* Memory::Allocate(uint32_t size)
     assert(Memory::gRegionList.Valid());
     
     Region* pReg = gRegionList.Prev->Next;
-    Console::Write("ALLOCATION\n");
-    
-    char buf[256];
-    int i = 0;
-    int len = 0;
     while(pReg != gRegionList.Prev)
-    {
-        len++;
-        pReg = pReg->Next;
-    };
-    pReg = gRegionList.Prev->Next;
-    for(int i = 0; i < len+ 1; i++)
-    {
-        Region& region = *(pReg);
-        pReg = pReg->Next;
-        
-        if(region.Free)
-            Console::Write("FREE ");
-        else
-            Console::Write("TAKEN ");
-    };
-    Console::Write("\n");
-    
-    pReg = gRegionList.Prev->Next;
-    
-    for(int i = 0; i < len+ 1; i++)
     {
         Region& region = *(pReg);
         pReg = pReg->Next;
