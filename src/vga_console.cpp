@@ -22,7 +22,11 @@ cx::os::kernel::console::ConsoleDeviceProperties cx::os::kernel::vga::VgaConsole
 
 void cx::os::kernel::vga::VgaConsole::SendCharacter(uint8_t c)
 {
-    kFramebuffer[_y][_x] = {c, _fg, _bg};
+    switch(c)
+    {
+        case '\n': _x = kConsoleWidth; break;
+        default: kFramebuffer[_y][_x] = {c, _fg, _bg}; break;
+    };
     
     _x++;
     if(_x >= kConsoleWidth && _y < kConsoleHeight)

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5F0934302576DB0200D9DEA9 /* vga_console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F09342F2576DB0200D9DEA9 /* vga_console.cpp */; };
+		5F0934392576FE4400D9DEA9 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F0934382576FE4400D9DEA9 /* memory.cpp */; };
 		5F49EAF7242A143400285E4D /* crtn.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5F49EAF6242A143400285E4D /* crtn.asm */; };
 		5FADB7DB257672650003DE02 /* printf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7DA257672650003DE02 /* printf.cpp */; };
 		5FADB7DE257673070003DE02 /* u64helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7DD257673070003DE02 /* u64helpers.cpp */; };
@@ -33,11 +34,12 @@
 /* Begin PBXFileReference section */
 		5F09342E2576DA7700D9DEA9 /* vga_console.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = vga_console.hpp; sourceTree = "<group>"; };
 		5F09342F2576DB0200D9DEA9 /* vga_console.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = vga_console.cpp; sourceTree = "<group>"; };
-		5F0934312576DB7300D9DEA9 /* memory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = memory.h; sourceTree = "<group>"; };
+		5F0934312576DB7300D9DEA9 /* memory.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = memory.hpp; sourceTree = "<group>"; };
 		5F0934322576DD2600D9DEA9 /* ports.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ports.hpp; sourceTree = "<group>"; };
 		5F0934342576DD6B00D9DEA9 /* enable_if.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = enable_if.hpp; sourceTree = "<group>"; };
 		5F0934362576F4BC00D9DEA9 /* list.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = list.hpp; sourceTree = "<group>"; };
 		5F0934372576F4DB00D9DEA9 /* min_list.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = min_list.hpp; sourceTree = "<group>"; };
+		5F0934382576FE4400D9DEA9 /* memory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = memory.cpp; sourceTree = "<group>"; };
 		5F49E95A2429E51600285E4D /* kernel-codebase */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "kernel-codebase"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F49EAF5242A140300285E4D /* crti.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = crti.asm; sourceTree = "<group>"; };
 		5F49EAF6242A143400285E4D /* crtn.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = crtn.asm; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				5FADB7E12576A30A0003DE02 /* startup.cpp */,
 				5FADB7E42576A42A0003DE02 /* console.cpp */,
 				5F09342F2576DB0200D9DEA9 /* vga_console.cpp */,
+				5F0934382576FE4400D9DEA9 /* memory.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -133,7 +136,7 @@
 				5F09342E2576DA7700D9DEA9 /* vga_console.hpp */,
 				5F0934322576DD2600D9DEA9 /* ports.hpp */,
 				5FADB7E62576A54A0003DE02 /* stdint.h */,
-				5F0934312576DB7300D9DEA9 /* memory.h */,
+				5F0934312576DB7300D9DEA9 /* memory.hpp */,
 				5F0934372576F4DB00D9DEA9 /* min_list.hpp */,
 			);
 			path = include;
@@ -233,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F0934392576FE4400D9DEA9 /* memory.cpp in Sources */,
 				5FF3A94524276B4B0065AE01 /* mbootmain.asm in Sources */,
 				5FF3A94124276B470065AE01 /* kmain.cpp in Sources */,
 				5FF3A96024279C500065AE01 /* cxxnew.cpp in Sources */,
