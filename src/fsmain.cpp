@@ -16,6 +16,8 @@ FS::Node* FS::gRoot = nullptr;
 
 void FS::Directory::Debug_Printout(int tabs)
 {
+    return;
+    
     for(int i = 0; i < tabs; i++)
         Console::Write("    ");
     Console::Write(mName);
@@ -50,6 +52,7 @@ void FS::Initialize()
     dir->Add(new File("test.elf"));
     dir->Add(new File("test2.elf"));
     
+    /*
     Directory *dir2 = new Directory("dev");
     dir2->Add(new File("test66.elf"));
     dir2->Add(new File("test77.elf"));
@@ -57,7 +60,8 @@ void FS::Initialize()
     dir->Add(dir2);
     dir->Add(new Directory("test156"));
     //gRoot->Insert(new File("test2.elf"));
+     */
     
-    dir->Debug_Printout();
+    // dir->Debug_Printout();
     gRoot = dir;
 }

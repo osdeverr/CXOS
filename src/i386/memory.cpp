@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <itoa.h>
 #include <console.h>
+#include <printf.h>
 
 namespace Memory
 {
@@ -35,10 +36,12 @@ void* Memory::Allocate(uint32_t size)
         if(region.Size < size || !region.Free)
             continue;
         
+        auto ptr = &region + 1;
+        printf("*** MEM: Allocating memory region 0x%08X (rs=0x%08X as=0x%08X)\n", ptr, region.Size, size);
         AddRegion((char*) &region + size + sizeof(Region), region.Size - size);
         region.Size = size;
         region.Free = false;
-        return &region + 1; // sizeof region
+        return ptr; // sizeof region
     };
     
     panic("Kernel out of physical memory");
@@ -47,7 +50,27 @@ void* Memory::Allocate(uint32_t size)
 void Memory::Free(void* ptr)
 {
     Region& region = *((Region*) ptr - 1);
+    
+    printf("*** MEM: Freeing memory region 0x%08X (rs=0x%08X)\n", ptr, region.Size);
+    
     region.Free = true;
+}
+void Memory::DumpMemoryRegions()
+{
+    printf("\n");
+    
+    int i = 1;
+    Region* pReg = gRegionList.Prev->Next;
+    while(pReg != gRegionList.Prev)
+    {
+        Region& region = *(pReg);
+        pReg = pReg->Next;
+        
+        auto ptr = &region + 1;
+        printf("*** MEM: Region #%d => {addr=0x%08X rs=0x%08X free=%d}\n", i++, ptr, region.Size, (int) region.Free);
+    };
+    
+    printf("\n");
 }
 
 void* malloc(uint32_t size) { return Memory::Allocate(size); }

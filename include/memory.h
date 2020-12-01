@@ -22,6 +22,8 @@ namespace Memory
     void  AddRegion(void* start, uint32_t size);
     void* Allocate(uint32_t size);
     void  Free(void* ptr);
+    
+    void  DumpMemoryRegions();
 }
 
 void* malloc(uint32_t size);

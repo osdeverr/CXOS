@@ -9,6 +9,12 @@
 #include <keyboard.h>
 #include <fs/root.h>
 #include <tlist.h>
+#include <printf.h>
+
+extern "C" void _putchar(char character)
+{
+    Console::Write(character);
+}
 
 typedef struct multiboot_memory_map {
     unsigned int size;
@@ -39,17 +45,29 @@ void CXMain(multiboot_info_t* mbt)
     Keyboard::Initialize();
     
     Console::Write("Yers\n");
-    mmap_entry_t* entry = (mmap_entry_t*) mbt->mmap_addr;\
+    mmap_entry_t* entry = (mmap_entry_t*) mbt->mmap_addr;
+    
+    printf("Printf %s\n", "works!");
     
     while((unsigned int) entry < mbt->mmap_addr + mbt->mmap_length) {
-        if(entry->type == 1)
-        {            
+        // We ignore the 0 entry since that causes issues
+        if(entry->type == 1 /* && entry->base_addr_low > 0*/)
+        {
+            printf("Adding memory region 0x%08X..0x%08X\n", (uint32_t) entry->base_addr_low, (uint32_t) entry->base_addr_low + entry->length_low);
             Memory::AddRegion((void*) entry->base_addr_low, entry->length_low);
         }
         entry = (mmap_entry_t*) ((unsigned int) entry + entry->size + sizeof(entry->size));
     }
+    
+    Memory::DumpMemoryRegions();
+    
     Plak* pPlak = new Plak;
     pPlak->Show();
+    delete pPlak;
+    
+    Memory::DumpMemoryRegions();
+    
+    FS::Initialize();
     
     IDT::AddFaultHandler(IDT::eFault_Breakpoint,
         [](const IDT::RegisterState& regs) {

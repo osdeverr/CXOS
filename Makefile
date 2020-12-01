@@ -3,7 +3,7 @@ BINFORMAT   := elf
 CROSSBIN    := /opt/elf-cross/bin/
 CC          := $(CROSSBIN)/$(ARCH)-$(BINFORMAT)-gcc
 CXX         := $(CROSSBIN)/$(ARCH)-$(BINFORMAT)-g++
-CFLAGS      := -std=c++17 -ffreestanding -fno-exceptions -fno-rtti -nostdlib -DCXK_ARCH=$(ARCH)
+CFLAGS      := -std=c++17 -fpermissive -ffreestanding -fno-exceptions -fno-rtti -nostdlib -DCXK_ARCH=$(ARCH)
 SRC_DIR     := src
 OBJ_DIR     := obj
 INCLUDE_DIR := include

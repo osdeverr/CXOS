@@ -17,11 +17,11 @@ namespace FS {
     public:
         Directory(const char* name) : Node(eNodeType_Directory, name) {}
         tList<Node>& GetChildren() { return mChildren; }
-        void Add(Node* child) { mChildren.push_back(child); child->SetParent(this); }
+        void Add(Node* child) { mChildren.Insert(child); child->SetParent(this); }
         
         void Debug_Printout(int tabs = 0);
     private:
-        list<Node> mChildren;
+        tList<Node> mChildren;
     };
 }
 
