@@ -255,6 +255,18 @@ struct multiboot_apm_info
     multiboot_uint16_t dseg_len;
 };
 
+typedef struct multiboot_memory_map {
+    multiboot_uint32_t size;
+    multiboot_uint32_t base_addr_low,base_addr_high;
+    // You can also use: unsigned long long int base_addr; if supported.
+    multiboot_uint32_t length_low,length_high;
+    // You can also use: unsigned long long int length; if supported.
+    multiboot_uint32_t type;
+} multiboot_memory_map_t;
+
+// this is really an entry, not the entire map.
+typedef multiboot_memory_map_t mmap_entry_t;
+
 #endif /* ! ASM_FILE */
 
 #endif /* ! MULTIBOOT_HEADER */

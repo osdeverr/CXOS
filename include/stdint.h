@@ -124,12 +124,14 @@ typedef unsigned long long uintmax_t;
 typedef int* intptr_t;
 typedef unsigned int* uintptr_t;
 
+#ifdef __cplusplus
 namespace std
 {
     typedef uint32_t size_t;
 }
+#endif // __cplusplus
 
 /*
  * Copyright (c) 1992-2012 by P.J. Plauger.  ALL RIGHTS RESERVED.
  * Consult your license regarding permissions and restrictions.
-V6.00:0009 */
+ V6.00:0009 */
