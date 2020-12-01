@@ -44,8 +44,8 @@ namespace cx::os::kernel::vga
         kColorWhite = kColorLightGray | kColorBright,
     };
     
-    template<size_t H, size_t W>
-    using VgaConsoleFramebuffer = VgaConsoleCell[W][H];
+    template<size_t W, size_t H>
+    using VgaConsoleFramebuffer = VgaConsoleCell[H][W];
     
     class VgaConsole : public console::IAnsiConsoleDevice
     {
