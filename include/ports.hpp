@@ -16,21 +16,21 @@ namespace cx::os::kernel::ports
     
     // Read ops
     
-    uint8_t ReadB(PortId id)
+    inline uint8_t ReadB(PortId id)
     {
         uint8_t result;
         asm volatile ( "inb %1, %0" : "=a"(result) : "Nd"(id) );
         return result;
     }
     
-    uint16_t ReadW(PortId id)
+    inline uint16_t ReadW(PortId id)
     {
         uint16_t result;
         asm volatile ( "inw %1, %0" : "=a"(result) : "Nd"(id) );
         return result;
     }
     
-    uint32_t ReadL(PortId id)
+    inline uint32_t ReadL(PortId id)
     {
         uint32_t result;
         asm volatile ( "inl %1, %0" : "=a"(result) : "Nd"(id) );
@@ -39,17 +39,17 @@ namespace cx::os::kernel::ports
     
     // Write ops
     
-    void WriteB(PortId id, uint8_t value)
+    inline void WriteB(PortId id, uint8_t value)
     {
         asm volatile ( "outb %0, %1" : : "a"(value), "Nd"(id) );
     }
     
-    void WriteW(PortId id, uint16_t value)
+    inline void WriteW(PortId id, uint16_t value)
     {
         asm volatile ( "outw %0, %1" : : "a"(value), "Nd"(id) );
     }
     
-    void WriteL(PortId id, uint32_t value)
+    inline void WriteL(PortId id, uint32_t value)
     {
         asm volatile ( "outl %0, %1" : : "a"(value), "Nd"(id) );
     }

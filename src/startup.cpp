@@ -12,6 +12,7 @@
 #include <printf.h>
 #include <min_list.hpp>
 #include <memory.hpp>
+#include <ports.hpp> 
  
 namespace cx::os::kernel::detail
 {
@@ -25,6 +26,12 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     gVgaConsole.ClearScreen();
     
     console::SetupAnsiConsole(&gVgaConsole);
+    
+    ports::WriteB(0x3D4, 0x0A);
+    ports::WriteB(0x3D5, (ports::ReadB(0x3D5) & 0xC0) | 0);
+    
+    ports::WriteB(0x3D4, 0x0B);
+    ports::WriteB(0x3D5, (ports::ReadB(0x3D5) & 0xE0) | 15);
     
     memory::AddMemoryRegion(nullptr, 0x1234);
     memory::AddMemoryRegion((void*) 0x50000, 0x50289);
@@ -41,7 +48,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     memory::DumpMemoryRegions();
     
-    printf("hi 0x%08X\n", 1024);
+    printf("hi 0x%08X\n", 1024); 
     
     struct Foo : MinListNode<Foo>
     {
@@ -53,7 +60,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     b.x = 6;
     c.x = 10;
     d.x = 30;
-    
+     
     MinList<Foo> list;
     list.InsertNode(&a);
     list.InsertNode(&b);
@@ -62,4 +69,6 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     for(auto& value : list)
         printf("value=%d\n", value.x);
+    
+    printf("\nish1.0 => ");
 }
