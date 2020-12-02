@@ -2,7 +2,7 @@ ENTRY(_start)
 SECTIONS
 {
 	. = 1M;
-	kernel_phys_addr = .;
+	__cx_kernel_start_marker = .;
 	.text BLOCK(128K) : ALIGN(4K)
 	{
 		text_sect_phys_addr = .;
@@ -27,7 +27,7 @@ SECTIONS
 		*(COMMON)
 		*(.bss)
 		*(.bootstrap_stack)
-		kend = .;
+		__cx_kernel_end_marker = .;
 	}
 }
 

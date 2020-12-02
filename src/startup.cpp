@@ -12,43 +12,64 @@
 #include <printf.h>
 #include <min_list.hpp>
 #include <memory.hpp>
-#include <ports.hpp> 
+#include <ports.hpp>
+
+extern char __cx_kernel_start_marker, __cx_kernel_end_marker;
  
 namespace cx::os::kernel::detail
 {
     vga::VgaConsole gVgaConsole;
+    
+    const auto gKernelStart = &__cx_kernel_start_marker;
+    const auto gKernelEnd = &__cx_kernel_end_marker;
 }
 
 void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
 {
-    using namespace detail;
+    using namespace detail; 
     gVgaConsole.UpdateCursor(0, 0);
     gVgaConsole.ClearScreen();
     
     console::SetupAnsiConsole(&gVgaConsole);
+    gVgaConsole.ToggleVgaCursor(true, 0, 15);
     
-    ports::WriteB(0x3D4, 0x0A);
-    ports::WriteB(0x3D5, (ports::ReadB(0x3D5) & 0xC0) | 0);
+    printf("*** LOAD: Loaded CXOS kernel @ 0x%08X..0x%08X\n", gKernelStart, gKernelEnd);
     
-    ports::WriteB(0x3D4, 0x0B);
-    ports::WriteB(0x3D5, (ports::ReadB(0x3D5) & 0xE0) | 15);
+    auto entry = (mmap_entry_t*) boot_info.mmap_addr;
     
-    memory::AddMemoryRegion(nullptr, 0x1234);
-    memory::AddMemoryRegion((void*) 0x50000, 0x50289);
+    while((unsigned int) entry < boot_info.mmap_addr + boot_info.mmap_length) {
+        // We ignore the 0 entry since that causes issues
+        if(entry->type == 1)
+        {
+            auto addr = (char*) entry->base_addr_low;
+            auto length = entry->length_low;
+            
+            if(addr >= gKernelStart && addr < gKernelEnd)
+            {
+                printf("*** LOAD: Found in-kernel MM bit - adjusting\n");
+                
+                addr = gKernelEnd;
+                length -= (addr - gKernelStart);
+            }
+            
+            printf("*** LOAD: Adding memory region type=%d 0x%08X..0x%08X\n", entry->type, addr, (uint32_t) addr + length);
+            memory::AddMemoryRegion(addr, length);
+        }
+        entry = (mmap_entry_t*) ((unsigned int) entry + entry->size + sizeof(entry->size));
+    }
     
     memory::DumpMemoryRegions();
     
     auto ptr = malloc(0x1400);
     printf("Allocated 0x1400 @ 0x%08X\n", ptr);
     
-    memory::DumpMemoryRegions();
-    
     free(ptr);
-    printf("Memory freed\n");
+    
+    malloc(0x1400);
+    malloc(0x140);
+    malloc(0x1500);
     
     memory::DumpMemoryRegions();
-    
-    printf("hi 0x%08X\n", 1024); 
     
     struct Foo : MinListNode<Foo>
     {
@@ -63,12 +84,9 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
      
     MinList<Foo> list;
     list.InsertNode(&a);
-    list.InsertNode(&b);
-    list.InsertNode(&c);
-    list.InsertNode(&d);
     
     for(auto& value : list)
         printf("value=%d\n", value.x);
     
-    printf("\nish1.0 => ");
+    printf("\nish1.0 # ");
 }

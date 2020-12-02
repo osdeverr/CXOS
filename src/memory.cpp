@@ -37,11 +37,12 @@ void* cx::os::kernel::memory::AllocateMemory(size_t size)
     {
         if(region.free && region.size >= size)
         {
+            printf("*** ALLOC: Region @ 0x%08X (size=0x%08X bytes) -> free=%d\n", &region, region.size, (int) region.free);
             region.free = false;
             
             auto data = (&region + 1);
             auto diff = region.size - size;
-            region.size -= size;
+            region.size = size;
             if(diff)
                 AddMemoryRegion((char*) data + size, diff);
             return data;

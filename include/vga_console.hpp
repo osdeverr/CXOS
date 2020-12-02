@@ -9,6 +9,7 @@
 #ifndef vga_console_h
 #define vga_console_h
 #include <console.hpp>
+#include <ports.hpp>
 
 namespace cx::os::kernel::vga
 {
@@ -44,6 +45,21 @@ namespace cx::os::kernel::vga
         kColorWhite = kColorLightGray | kColorBright,
     };
     
+    enum VgaPort : ports::PortId
+    {
+        kVgaPort_Command = 0x3D4,
+        kVgaPort_Data = 0x3D5
+    };
+    
+    enum VgaPortCmd : uint8_t
+    {
+        kVgaPortCmd_UpdateCursorBegin = 0x0A,
+        kVgaPortCmd_UpdateCursorEnd = 0x0B,
+        
+        kVgaPortCmd_UpdateCursorPosX = 0x0F,
+        kVgaPortCmd_UpdateCursorPosY = 0x0E,
+    };
+    
     template<size_t W, size_t H>
     using VgaConsoleFramebuffer = VgaConsoleCell[H][W];
     
@@ -51,6 +67,7 @@ namespace cx::os::kernel::vga
     {
     private:
         static constexpr size_t kConsoleWidth = 80, kConsoleHeight = 25;
+        static constexpr ports::PortId kVgaPortCmd = 0x3D4, kVgaPortData = 0x3D5;
         
         using Framebuffer = VgaConsoleFramebuffer<kConsoleWidth, kConsoleHeight>;
         inline static auto& kFramebuffer = *(Framebuffer*) 0xB8000;
@@ -64,9 +81,13 @@ namespace cx::os::kernel::vga
         virtual void UpdateCursor(size_t x, size_t y) override;
         virtual void ClearScreen() override;
         
+        void ToggleVgaCursor(bool toggle, int begin_scanline = 0, int end_scanline = 15);
+        
     private:
         size_t _x = 0, _y = 0;
         uint8_t _fg = kColorGreen, _bg = kColorBlack;
+        
+        void ScrollDownOneLine();
     };
 }
 
