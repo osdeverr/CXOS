@@ -13,6 +13,7 @@
 #include <min_list.hpp>
 #include <memory.hpp>
 #include <ports.hpp>
+#include <stack_trace.hpp>
 
 extern char __cx_kernel_start_marker, __cx_kernel_end_marker;
  
@@ -39,7 +40,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     while((unsigned int) entry < boot_info.mmap_addr + boot_info.mmap_length) {
         // We ignore the 0 entry since that causes issues
-        if(entry->type == 1)
+        if(entry->type == 1 && entry->base_addr_low != 0)
         {
             auto addr = (char*) entry->base_addr_low;
             auto length = entry->length_low;
@@ -60,14 +61,9 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     memory::DumpMemoryRegions();
     
-    auto ptr = malloc(0x1400);
-    printf("Allocated 0x1400 @ 0x%08X\n", ptr);
-    
-    free(ptr);
-    
-    malloc(0x1400);
-    malloc(0x140);
-    malloc(0x1500);
+    auto pInt = new int(5);
+    printf("int @ 0x%08X = %d\n", pInt, *pInt);
+    delete pInt;
     
     memory::DumpMemoryRegions();
     

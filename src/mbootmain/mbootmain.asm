@@ -36,6 +36,7 @@ _start:
 	; nel_main.
 	push ebx ; Multiboot structure
 	push eax ; Multiboot magic number
+    xor ebp, ebp ; Stacktrace support
 	extern kmain
 	call kmain
 	; If the kernel someway returned (btw it cannot happen because of while(1)), just halt.
