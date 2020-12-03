@@ -14,6 +14,7 @@
 #include <memory.hpp>
 #include <ports.hpp>
 #include <stack_trace.hpp>
+#include <fixed_vector.hpp>
 
 extern char __cx_kernel_start_marker, __cx_kernel_end_marker;
  
@@ -82,7 +83,19 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     list.InsertNode(&a);
     
     for(auto& value : list)
-        printf("value=%d\n", value.x);
+        printf("list value=%d\n", value.x);
+    
+    FixedVector<int, 2> ints;
+    ints.push_back(6);
+    ints.push_back(7);
+    ints.push_back(8);
+    ints.push_back(9);
+    ints.push_back(3);
+    
+    auto stuffs = ints;
+    
+    for(auto& value : ints)
+        printf("vec value=%d\n", value);
     
     printf("\nish1.0 # ");
 }

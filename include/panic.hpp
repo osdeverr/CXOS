@@ -11,6 +11,7 @@
 
 namespace cx::os::kernel::debug
 {
+    [[noreturn]]
     void TriggerKernelPanic(const char* reason = "<unspecified>");
 }
 

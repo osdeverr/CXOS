@@ -2,7 +2,7 @@
 #include <startup.hpp>
 #include <panic.hpp>
 
-extern "C" void kmain(int b, multiboot_info_t* pMBInfo)
+extern "C" void cx_os_kernel_main(int b, multiboot_info_t* pMBInfo)
 {
     if(pMBInfo == nullptr)
         return; 

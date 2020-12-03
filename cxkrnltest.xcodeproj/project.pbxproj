@@ -12,6 +12,8 @@
 		5F49EAF7242A143400285E4D /* crtn.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5F49EAF6242A143400285E4D /* crtn.asm */; };
 		5F514EA425781C7B00787455 /* stack_trace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EA325781C7B00787455 /* stack_trace.cpp */; };
 		5F514EA725781D0C00787455 /* panic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EA625781D0C00787455 /* panic.cpp */; };
+		5F514EB42579034D00787455 /* interrupts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EB32579034D00787455 /* interrupts.cpp */; };
+		5F514EB62579075200787455 /* interrupts_impl.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EB52579075200787455 /* interrupts_impl.asm */; };
 		5FADB7DB257672650003DE02 /* printf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7DA257672650003DE02 /* printf.cpp */; };
 		5FADB7DE257673070003DE02 /* u64helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7DD257673070003DE02 /* u64helpers.cpp */; };
 		5FADB7E22576A30A0003DE02 /* startup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7E12576A30A0003DE02 /* startup.cpp */; };
@@ -49,6 +51,14 @@
 		5F514EA325781C7B00787455 /* stack_trace.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stack_trace.cpp; sourceTree = "<group>"; };
 		5F514EA525781CE300787455 /* panic.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = panic.hpp; sourceTree = "<group>"; };
 		5F514EA625781D0C00787455 /* panic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = panic.cpp; sourceTree = "<group>"; };
+		5F514EAD2578FA8C00787455 /* interrupt_types.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interrupt_types.hpp; sourceTree = "<group>"; };
+		5F514EAE2578FB3800787455 /* fixed_vector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fixed_vector.hpp; sourceTree = "<group>"; };
+		5F514EAF2578FC8900787455 /* cx_throw.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cx_throw.hpp; sourceTree = "<group>"; };
+		5F514EB02579011500787455 /* interrupt_regs.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interrupt_regs.hpp; sourceTree = "<group>"; };
+		5F514EB12579016900787455 /* interrupt_handlers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interrupt_handlers.hpp; sourceTree = "<group>"; };
+		5F514EB2257902CC00787455 /* interrupt_table.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interrupt_table.hpp; sourceTree = "<group>"; };
+		5F514EB32579034D00787455 /* interrupts.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = interrupts.cpp; sourceTree = "<group>"; };
+		5F514EB52579075200787455 /* interrupts_impl.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = interrupts_impl.asm; sourceTree = "<group>"; };
 		5FADB7DA257672650003DE02 /* printf.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = printf.cpp; sourceTree = "<group>"; };
 		5FADB7DC257672820003DE02 /* printf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = printf.h; sourceTree = "<group>"; };
 		5FADB7DD257673070003DE02 /* u64helpers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = u64helpers.cpp; sourceTree = "<group>"; };
@@ -137,17 +147,23 @@
 			children = (
 				5F0934332576DD5B00D9DEA9 /* stl */,
 				5FF3A95324277D5E0065AE01 /* multiboot.h */,
+				5F0934312576DB7300D9DEA9 /* memory.hpp */,
 				5FADB7DC257672820003DE02 /* printf.h */,
 				5FADB7DF2576A2420003DE02 /* startup.hpp */,
+				5F514EA525781CE300787455 /* panic.hpp */,
+				5F514EA225781C5000787455 /* stack_trace.hpp */,
 				5FADB7E02576A2C30003DE02 /* intrinsics.h */,
 				5FADB7E32576A3FB0003DE02 /* console.hpp */,
 				5F09342E2576DA7700D9DEA9 /* vga_console.hpp */,
 				5F0934322576DD2600D9DEA9 /* ports.hpp */,
 				5FADB7E62576A54A0003DE02 /* stdint.h */,
-				5F0934312576DB7300D9DEA9 /* memory.hpp */,
 				5F0934372576F4DB00D9DEA9 /* min_list.hpp */,
-				5F514EA225781C5000787455 /* stack_trace.hpp */,
-				5F514EA525781CE300787455 /* panic.hpp */,
+				5F514EAD2578FA8C00787455 /* interrupt_types.hpp */,
+				5F514EB02579011500787455 /* interrupt_regs.hpp */,
+				5F514EB12579016900787455 /* interrupt_handlers.hpp */,
+				5F514EB2257902CC00787455 /* interrupt_table.hpp */,
+				5F514EAE2578FB3800787455 /* fixed_vector.hpp */,
+				5F514EAF2578FC8900787455 /* cx_throw.hpp */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -165,6 +181,8 @@
 			isa = PBXGroup;
 			children = (
 				5FADB7DD257673070003DE02 /* u64helpers.cpp */,
+				5F514EB32579034D00787455 /* interrupts.cpp */,
+				5F514EB52579075200787455 /* interrupts_impl.asm */,
 			);
 			path = i386;
 			sourceTree = "<group>";
@@ -254,9 +272,11 @@
 				5F514EA725781D0C00787455 /* panic.cpp in Sources */,
 				5FADB7DE257673070003DE02 /* u64helpers.cpp in Sources */,
 				5FADB7DB257672650003DE02 /* printf.cpp in Sources */,
+				5F514EB62579075200787455 /* interrupts_impl.asm in Sources */,
 				5FADB7E22576A30A0003DE02 /* startup.cpp in Sources */,
 				5F49EAF7242A143400285E4D /* crtn.asm in Sources */,
 				5F514EA425781C7B00787455 /* stack_trace.cpp in Sources */,
+				5F514EB42579034D00787455 /* interrupts.cpp in Sources */,
 				5FADB7E52576A42A0003DE02 /* console.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

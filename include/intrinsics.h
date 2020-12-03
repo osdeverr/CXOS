@@ -9,6 +9,8 @@
 #ifndef intrinsics_h
 #define intrinsics_h
 
+#define CX_OS_IRQS_ON() asm("sti")
+#define CX_OS_IRQS_OFF() asm("cli")
 #define CX_OS_HALT_CPU() asm("hlt")
 
 #endif /* intrinsics_h */

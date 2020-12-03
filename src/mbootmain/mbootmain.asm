@@ -37,8 +37,8 @@ _start:
 	push ebx ; Multiboot structure
 	push eax ; Multiboot magic number
     xor ebp, ebp ; Stacktrace support
-	extern kmain
-	call kmain
+	extern cx_os_kernel_main
+	call cx_os_kernel_main
 	; If the kernel someway returned (btw it cannot happen because of while(1)), just halt.
 	cli ; Disable the interrupts, so no IRQs can happen.
 	hlt ; Halt the CPU - OS kernel is stopped.

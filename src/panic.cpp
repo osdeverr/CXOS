@@ -9,6 +9,7 @@
 #include <panic.hpp>
 #include <stack_trace.hpp>
 #include <printf.h>
+#include <intrinsics.h>
 
 void cx::os::kernel::debug::TriggerKernelPanic(const char* reason)
 {
@@ -17,4 +18,10 @@ void cx::os::kernel::debug::TriggerKernelPanic(const char* reason)
     DumpStackTrace();
     
     printf("\nHalting execution.");
+    
+    while(true)
+    {
+        CX_OS_IRQS_OFF();
+        CX_OS_HALT_CPU();
+    }
 }
