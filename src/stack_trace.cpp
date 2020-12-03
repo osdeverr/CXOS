@@ -11,7 +11,7 @@
 
 void cx::os::kernel::debug::DumpStackTrace()
 {
-    constexpr auto kMaxFrames = 30;
+    constexpr auto kMaxFrames = 15;
     
     DebugStackFrame* stack;
     asm ("movl %%ebp,%0" : "=r"(stack));
