@@ -127,6 +127,11 @@ namespace cx
             return end();
         }
         
+        value_type& operator[](size_t index)
+        {
+            return _items[index];
+        }
+        
         iterator push_back(const value_type& value)
         {
             if(size() == Max)
@@ -135,6 +140,14 @@ namespace cx
             auto& ref = _items[_count++];
             ref = value;
             return CreateIterator(ref);
+        }
+        
+        void clear()
+        {
+            for(auto& value : *this)
+                value = {};
+            
+            _count = 0;
         }
         
     private:

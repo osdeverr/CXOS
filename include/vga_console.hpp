@@ -10,6 +10,7 @@
 #define vga_console_h
 #include <console.hpp>
 #include <ports.hpp>
+#include <fixed_vector.hpp>
 
 namespace cx::os::kernel::vga
 {
@@ -62,12 +63,20 @@ namespace cx::os::kernel::vga
     
     template<size_t W, size_t H>
     using VgaConsoleFramebuffer = VgaConsoleCell[H][W];
+        
+    enum class VgaEscapeState
+    {
+        Idle,
+        WaitingForBracket,
+        Reading,
+    };
     
     class VgaConsole : public console::IAnsiConsoleDevice
     {
     private:
         static constexpr size_t kConsoleWidth = 80, kConsoleHeight = 25;
         static constexpr ports::PortId kVgaPortCmd = 0x3D4, kVgaPortData = 0x3D5;
+        static constexpr uint8_t kDefaultFg = kColorLightGray, kDefaultBg = kColorBlack;
         
         using Framebuffer = VgaConsoleFramebuffer<kConsoleWidth, kConsoleHeight>;
         inline static auto& kFramebuffer = *(Framebuffer*) 0xB8000;
@@ -85,7 +94,10 @@ namespace cx::os::kernel::vga
         
     private:
         size_t _x = 0, _y = 0;
-        uint8_t _fg = kColorGreen, _bg = kColorBlack;
+        uint8_t _fg = kDefaultFg, _bg = kDefaultBg;
+        
+        VgaEscapeState _esc = VgaEscapeState::Idle;
+        FixedVector<char, 32> _escbuf;
         
         void ScrollDownOneLine();
     };

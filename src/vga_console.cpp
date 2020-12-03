@@ -22,25 +22,134 @@ cx::os::kernel::console::ConsoleDeviceProperties cx::os::kernel::vga::VgaConsole
 
 void cx::os::kernel::vga::VgaConsole::SendCharacter(uint8_t c)
 {
-    switch(c)
+    if(_esc == VgaEscapeState::Idle)
     {
-        case '\n': _x = kConsoleWidth; break;
-        default: kFramebuffer[_y][_x] = {c, _fg, _bg}; break;
-    };
-    
-    _x++;
-    if(_x >= kConsoleWidth)
-    {
-        _x = 0;
-        _y++;
+        switch(c)
+        {
+            case '\n': _x = kConsoleWidth; break;
+            case '\e': _esc = VgaEscapeState::WaitingForBracket; return;
+            default: kFramebuffer[_y][_x] = {c, _fg, _bg}; break;
+        };
+        
+        _x++;
+        if(_x >= kConsoleWidth)
+        {
+            _x = 0;
+            _y++;
+        }
+        
+        if(_y >= kConsoleHeight)
+        {
+            ScrollDownOneLine();
+        }
+        
+        UpdateCursor(_x, _y);
     }
-    
-    if(_y >= kConsoleHeight)
+    else
     {
-        ScrollDownOneLine();
+        auto atoi =
+        [](const char *str)
+        {
+            int res = 0; // Initialize result
+            
+            // Iterate through all characters of input string and update result
+            for (int i = 0; str[i] != '\0'; ++i)
+                res = res*10 + str[i] - '0';
+            
+            // return result.
+            return res;
+        };
+        
+        bool done = false;
+        
+        if(_esc == VgaEscapeState::WaitingForBracket)
+        {
+            if(c == '[')
+                _esc = VgaEscapeState::Reading;
+            else
+                done = true;
+            
+            return;
+        }
+        else if(_esc == VgaEscapeState::Reading)
+        {
+            if(_escbuf.size() >= _escbuf.capacity())
+            {
+                done = true;
+            }
+            else
+            {
+                if(c == 'm')
+                {
+                    _esc = VgaEscapeState::Idle;
+                    
+                    switch(atoi(&_escbuf[0])) //We're using a big switch-case construction there.
+                    {
+                        case 0:  _fg = kDefaultFg; _bg = kDefaultBg; break;
+                            /*
+                        case 1:  tty_setcolor((tty_color<8) ? tty_color+0x08 : tty_color); break;
+                        case 2:  tty_setcolor((tty_color>8) ? tty_color-0x08 : tty_color); break;
+                        case 7:  tty_setcolor(((tty_color << 4) | (tty_color >> 4))); break;
+                        case 8:  tty_setcolor(tty_mkcolor(tty_color>>4, tty_color>>4)); break;
+                        case 21: tty_setcolor((tty_color>8) ? tty_color-0x08 : tty_color); break;
+                        case 22: tty_setcolor((tty_color<8) ? tty_color+0x08 : tty_color); break;
+                        case 27: tty_color = tty_mkcolor(tty_color<<4, tty_color>>4); break;
+                        case 28: tty_setcolor(TERM_DEFAULT_COLOR); break;
+                             */
+                            //Color setting, yes, a lot of code.
+                            //foreground
+                        case 39: _fg = kColorLightGray; break;
+                        case 30: _fg = kColorBlack; break;
+                        case 31: _fg = kColorRed; break;
+                        case 32: _fg = kColorGreen; break;
+                        case 33: _fg = kColorBrown; break;
+                        case 34: _fg = kColorBlue; break;
+                        case 35: _fg = kColorMagenta; break;
+                        case 36: _fg = kColorCyan; break;
+                        case 37: _fg = kColorLightGray; break;
+                        case 90: _fg = kColorDarkGray; break;
+                        case 91: _fg = kColorLightRed; break;
+                        case 92: _fg = kColorLightGreen; break;
+                        case 93: _fg = kColorYellow; break;
+                        case 94: _fg = kColorLightBlue; break;
+                        case 95: _fg = kColorLightMagenta; break;
+                        case 96: _fg = kColorLightCyan; break;
+                        case 97: _fg = kColorWhite; break;
+                            //background
+                        case 49: _bg = kColorBlack; break;
+                        case 40: _bg = kColorBlack; break;
+                        case 41: _bg = kColorRed; break;
+                        case 42: _bg = kColorGreen; break;
+                        case 43: _bg = kColorYellow; break;
+                        case 44: _bg = kColorBlue; break;
+                        case 45: _bg = kColorMagenta; break;
+                        case 46: _bg = kColorCyan; break;
+                        case 47: _bg = kColorLightGray; break;
+                        case 100: _bg = kColorDarkGray; break;
+                        case 101: _bg = kColorLightRed; break;
+                        case 102: _bg = kColorGreen; break;
+                        case 103: _bg = kColorBrown; break;
+                        case 104: _bg = kColorLightBlue; break;
+                        case 105: _bg = kColorLightMagenta; break;
+                        case 106: _bg = kColorLightCyan; break;
+                        case 107: _bg = kColorWhite; break;
+                    }
+                    
+                    done = true;
+                }
+                else
+                {
+                    _escbuf.push_back(c);
+                }
+            }
+        }
+        
+        if(done)
+        {
+            _esc = VgaEscapeState::Idle;
+            _escbuf.clear();
+        }
     }
-    
-    UpdateCursor(_x, _y);
 }
 
 void cx::os::kernel::vga::VgaConsole::UpdateCursor(size_t x, size_t y)

@@ -15,13 +15,15 @@ namespace cx::os::kernel::interrupts
 {
     using InterruptHandlerPtr = void(*)(const InterruptRegisterState&);
     using InterruptHandlerList = FixedVector<InterruptHandlerPtr, 32>;
+    using InterruptHandlerKey = void*;
     
     class InterruptHandlerCollection
     {
     public:
-        void AddHandler(InterruptHandlerPtr handler)
+        InterruptHandlerKey AddHandler(InterruptHandlerPtr handler)
         {
             _handlers.push_back(handler);
+            return reinterpret_cast<InterruptHandlerKey>(handler);
         }
         
         void HandleInterrupt(const InterruptRegisterState& regs)

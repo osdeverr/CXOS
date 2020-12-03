@@ -31,7 +31,9 @@ namespace cx::os::kernel::interrupts
         UnknownInterrupt,
         FPUError,
         WrongAlignment,
-        MachineStateCheck
+        MachineStateCheck,
+        
+        Count
     };
     
     enum class IrqType
@@ -54,7 +56,9 @@ namespace cx::os::kernel::interrupts
         PS2Mouse,
         FPCoprocessor,
         ATAMaster,
-        ATASlave
+        ATASlave,
+        
+        Count
     };
 
     

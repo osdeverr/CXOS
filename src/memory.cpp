@@ -7,7 +7,7 @@
 //
 
 #include <memory.hpp>
-#include <printf.h>
+#include <kprintf.hpp>
 
 namespace cx::os::kernel::memory::detail
 {
@@ -27,7 +27,7 @@ void cx::os::kernel::memory::DumpMemoryRegions()
 {
     printf("\n");
     for(auto& region : detail::gTheMemoryRegions)
-        printf("*** MEM: Region @ 0x%08X (size=0x%08X bytes) -> free=%d\n", &region, region.size, (int) region.free);
+        kprintf("DumpMemoryRegions: Region @ 0x%08X (size=0x%08X bytes) -> free=%d\n", &region, region.size, (int) region.free);
     printf("\n");
 }
 
@@ -37,7 +37,7 @@ void* cx::os::kernel::memory::AllocateMemory(size_t size)
     {
         if(region.free && region.size >= size)
         {
-            printf("*** ALLOC: Region @ 0x%08X (size=0x%08X bytes) -> free=%d\n", &region, region.size, (int) region.free);
+            kprintf("AllocateMemory: Region @ 0x%08X (size=0x%08X bytes) -> free=%d\n", &region, region.size, (int) region.free);
             region.free = false;
             
             auto data = (&region + 1);
