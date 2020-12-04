@@ -56,6 +56,7 @@ void cx::os::kernel::memory::FreeMemory(void* addr)
 {
     auto region = reinterpret_cast<MemoryRegion*>((char*) addr - sizeof(MemoryRegion));
     region->free = true;
+    kprintf("FreeMemory: Region @ 0x%08X (size=0x%08X bytes) -> free=%d\n", region, region->size, (int) region->free);
 }
  
 extern "C" void* malloc(int size)

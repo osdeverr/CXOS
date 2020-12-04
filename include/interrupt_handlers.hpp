@@ -10,6 +10,7 @@
 #define interrupt_handlers_h
 #include <interrupt_regs.hpp>
 #include <fixed_vector.hpp>
+#include <kprintf.hpp>
 
 namespace cx::os::kernel::interrupts
 {

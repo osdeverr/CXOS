@@ -4,7 +4,8 @@ cx_idt_impl_load_anchor:
 lidt [cx_idt_anchor]
 ret
 
-extern cx_idt_binding_interrupt_handler
+extern cx_idt_binding_isr_handler
+extern cx_idt_binding_irq_handler
 
 global cx_idt_impl_irq_handler
 global cx_idt_impl_isr_handler
@@ -22,7 +23,7 @@ mov fs, ax
 mov gs, ax
 mov eax, esp
 push eax
-mov eax, cx_idt_binding_interrupt_handler
+mov eax, cx_idt_binding_irq_handler
 call eax
 pop eax
 pop gs
@@ -51,7 +52,7 @@ mov fs, ax
 mov gs, ax
 mov eax, esp   ; Push us the stack
 push eax
-mov eax, cx_idt_binding_interrupt_handler
+mov eax, cx_idt_binding_isr_handler
 call eax       ; A special call, preserves the 'eip' register
 pop eax
 pop gs

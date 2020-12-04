@@ -16,6 +16,9 @@
 #include <panic.hpp>
 
 #include <printf.h>
+#include <kprintf.hpp>
+
+#include <intrinsics.h>
 
 extern "C"
 {
@@ -23,14 +26,6 @@ extern "C"
     
     InterruptTableDescriptor cx_idt_anchor;
     extern void cx_idt_impl_load_anchor();
-    
-    void cx_idt_binding_interrupt_handler(const InterruptRegisterState& regs)
-    {
-        char buf[256] = "";
-        sprintf(buf, "Caught CPU fault #%d\n", regs.interrupt_number);
-        
-        cx::os::kernel::debug::TriggerKernelPanic(buf);
-    }
 }
 
 namespace cx::os::kernel::interrupts::detail
@@ -54,6 +49,7 @@ namespace cx::os::kernel::interrupts::detail
     }
     
     constexpr auto kInterruptTableSize = 256;
+    constexpr auto kPic1Base = 32, kPic2Base = kPic1Base + 8;
     
     InterruptTableEntry gRawInterruptTable[kInterruptTableSize] = { 0 };
     InterruptHandlerCollection gInterruptHandlers[int(IrqType::Count)] = {};
@@ -122,23 +118,92 @@ namespace cx::os::kernel::interrupts::detail
         ports::WriteB(kInterruptControllerPort_MasterData, 0);
         ports::WriteB(kInterruptControllerPort_SlaveData, 0);
     }
+    
+    void HandleIsrException(const InterruptRegisterState& regs)
+    {
+        char buf[256] = "";
+        sprintf(buf, "Kernel caught CPU interrupt #%d\n", regs.interrupt_number);
+        
+        cx::os::kernel::debug::TriggerKernelPanic(buf);
+    }
+    
+    void HandleIrqInterrupt(const InterruptRegisterState& regs)
+    {
+        CX_OS_IRQS_OFF();
+        
+        auto num = regs.interrupt_number;
+        
+        if(num >= kPic1Base)
+        {
+            gInterruptHandlers[num - kPic1Base].HandleInterrupt(regs);
+        }
+        
+        if(num >= kPic1Base)
+            ports::WriteB(kInterruptControllerPort_MasterCommand, kInterruptControllerCommand_EndOfInterrupt);
+        if(num >= kPic2Base)
+            ports::WriteB(kInterruptControllerPort_SlaveCommand, kInterruptControllerCommand_EndOfInterrupt);
+        
+        CX_OS_IRQS_ON();
+    }
+}
+
+extern "C"
+{
+    void cx_idt_binding_isr_handler(const InterruptRegisterState& regs)
+    {
+        cx::os::kernel::interrupts::detail::HandleIsrException(regs);
+    }
+    
+    void cx_idt_binding_irq_handler(const InterruptRegisterState& regs)
+    {
+        cx::os::kernel::interrupts::detail::HandleIrqInterrupt(regs);
+    }
 }
 
 void cx::os::kernel::interrupts::SetupInterruptTable()
 {
     using namespace detail;
     
-    SetupInterruptController(32, 40);
+    SetupInterruptController(kPic1Base, kPic2Base);
     
-    SetupIrqGates<0>();
+    SetupIsrGates<0>();
     
     // PIC 1
-    SetupIrqGates<32, 33, 34, 35, 36, 37, 38, 39>();
+    SetupIrqGates<
+        kPic1Base + 0,
+        kPic1Base + 1,
+        kPic1Base + 2,
+        kPic1Base + 3,
+        kPic1Base + 4,
+        kPic1Base + 5,
+        kPic1Base + 6,
+        kPic1Base + 7
+    >();
     
     // PIC 2
-    SetupIrqGates<40, 41, 42, 43, 44, 45, 46, 47>();
+    SetupIrqGates<
+        kPic2Base + 0,
+        kPic2Base + 1,
+        kPic2Base + 2,
+        kPic2Base + 3,
+        kPic2Base + 4,
+        kPic2Base + 5,
+        kPic2Base + 6,
+        kPic2Base + 7
+    >();
     
     cx_idt_anchor.limit = sizeof(gRawInterruptTable) - 1;
     cx_idt_anchor.base = (uint32_t) &gRawInterruptTable;
     cx_idt_impl_load_anchor();
+}
+
+cx::os::kernel::interrupts::InterruptHandlerKey cx::os::kernel::interrupts::AddIrqHandler(IrqType type, InterruptHandlerPtr handler)
+{
+    using namespace detail;
+    return gInterruptHandlers[int(type)].AddHandler(handler);
+}
+
+void cx::os::kernel::interrupts::RemoveIrqHandler(IrqType type, InterruptHandlerKey key)
+{
+    
 }

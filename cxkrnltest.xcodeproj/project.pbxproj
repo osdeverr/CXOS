@@ -62,6 +62,11 @@
 		5F514EB72579238200787455 /* interrupts.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interrupts.hpp; sourceTree = "<group>"; };
 		5F514EB9257925A300787455 /* interrupt_controller.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interrupt_controller.hpp; sourceTree = "<group>"; };
 		5F514EBA2579610000787455 /* kprintf.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kprintf.hpp; sourceTree = "<group>"; };
+		5F514EBC257A83BF00787455 /* pit_timer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = pit_timer.hpp; sourceTree = "<group>"; };
+		5F514EBD257A83E700787455 /* timer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = timer.hpp; sourceTree = "<group>"; };
+		5F514EBE257A848800787455 /* function.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = function.hpp; sourceTree = "<group>"; };
+		5F514EBF257A855900787455 /* shared_ptr.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = shared_ptr.hpp; sourceTree = "<group>"; };
+		5F514EC0257A8F9200787455 /* nullptr.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nullptr.hpp; sourceTree = "<group>"; };
 		5FADB7DA257672650003DE02 /* printf.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = printf.cpp; sourceTree = "<group>"; };
 		5FADB7DC257672820003DE02 /* printf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = printf.h; sourceTree = "<group>"; };
 		5FADB7DD257673070003DE02 /* u64helpers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = u64helpers.cpp; sourceTree = "<group>"; };
@@ -95,17 +100,11 @@
 			children = (
 				5F0934342576DD6B00D9DEA9 /* enable_if.hpp */,
 				5F0934362576F4BC00D9DEA9 /* list.hpp */,
+				5F514EBE257A848800787455 /* function.hpp */,
+				5F514EBF257A855900787455 /* shared_ptr.hpp */,
+				5F514EC0257A8F9200787455 /* nullptr.hpp */,
 			);
 			path = stl;
-			sourceTree = "<group>";
-		};
-		5F49EAF4242A13F500285E4D /* cxx */ = {
-			isa = PBXGroup;
-			children = (
-				5F49EAF5242A140300285E4D /* crti.asm */,
-				5F49EAF6242A143400285E4D /* crtn.asm */,
-			);
-			path = cxx;
 			sourceTree = "<group>";
 		};
 		5FF3A91724266DDC0065AE01 = {
@@ -121,7 +120,6 @@
 		5FF3A92324266E360065AE01 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				5F49EAF4242A13F500285E4D /* cxx */,
 				5FF3A94B24276D500065AE01 /* i386 */,
 				5FF3A92424266E360065AE01 /* mbootmain */,
 				5FF3A92724266E360065AE01 /* kmain.cpp */,
@@ -168,6 +166,8 @@
 				5F514EB12579016900787455 /* interrupt_handlers.hpp */,
 				5F514EB2257902CC00787455 /* interrupt_table.hpp */,
 				5F514EB9257925A300787455 /* interrupt_controller.hpp */,
+				5F514EBD257A83E700787455 /* timer.hpp */,
+				5F514EBC257A83BF00787455 /* pit_timer.hpp */,
 				5F514EAE2578FB3800787455 /* fixed_vector.hpp */,
 				5F514EAF2578FC8900787455 /* cx_throw.hpp */,
 			);
@@ -186,6 +186,8 @@
 		5FF3A94B24276D500065AE01 /* i386 */ = {
 			isa = PBXGroup;
 			children = (
+				5F49EAF5242A140300285E4D /* crti.asm */,
+				5F49EAF6242A143400285E4D /* crtn.asm */,
 				5FADB7DD257673070003DE02 /* u64helpers.cpp */,
 				5F514EB32579034D00787455 /* interrupts.cpp */,
 				5F514EB52579075200787455 /* interrupts_impl.asm */,

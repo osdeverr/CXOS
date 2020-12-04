@@ -37,6 +37,8 @@ _start:
 	push ebx ; Multiboot structure
 	push eax ; Multiboot magic number
     xor ebp, ebp ; Stacktrace support
+    extern _init
+    call _init
 	extern cx_os_kernel_main
 	call cx_os_kernel_main
 	; If the kernel someway returned (btw it cannot happen because of while(1)), just halt.

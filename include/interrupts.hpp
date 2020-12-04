@@ -8,13 +8,15 @@
 
 #ifndef interrupts_h
 #define interrupts_h
+#include <interrupt_types.hpp>
+#include <interrupt_handlers.hpp>
 
 namespace cx::os::kernel::interrupts
 {
     void SetupInterruptTable();
     
-    void AddIrqHandler();
-    void RemoveIrqHandler();
+    InterruptHandlerKey AddIrqHandler(IrqType type, InterruptHandlerPtr handler);
+    void RemoveIrqHandler(IrqType type, InterruptHandlerKey key);
 }
 
 #endif /* interrupts_h */

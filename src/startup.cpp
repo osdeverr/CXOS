@@ -17,6 +17,10 @@
 #include <fixed_vector.hpp>
 #include <interrupts.hpp>
 #include <kprintf.hpp>
+#include <intrinsics.h>
+
+#include <stl/shared_ptr.hpp>
+#include <stl/function.hpp>
 
 extern char __cx_kernel_start_marker, __cx_kernel_end_marker;
  
@@ -70,7 +74,37 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     printf("Welcome to \e[94mCXOS\e[0m\n");
     
+    interrupts::AddIrqHandler(interrupts::IrqType::PIT,
+                              [](const interrupts::InterruptRegisterState& regs)
+                              {
+                                  kprintf("Timer hit!\n");
+                              }
+                              );
+    
+    interrupts::AddIrqHandler(interrupts::IrqType::PS2Keyboard,
+                              [](const interrupts::InterruptRegisterState& regs)
+                              {
+                                  kprintf("I hit the KEY!\n");
+                              }
+                              );
+    
     printf("\n");
-    printf("\e[93mish1.0\e[90m # \e[0m");
-    while(1);
+    printf("\e[93mish1.0\e[90m # \e[0m\n\n");
+    
+    auto p1 = std::make_shared<int>(4);
+    auto p2 = p1;
+   
+    int fCounter = 0;
+    std::function<void()> cprint =
+    [&fCounter]()
+    {
+        printf("fCounter=%d\n", fCounter++);
+    };
+    
+    for(auto i = 0; i < 5; i++)
+        cprint();
+    
+    printf("p1=%d; p2=%d\n", *p1, *p2);
+    
+    // while(1) asm("sti; hlt");
 }
