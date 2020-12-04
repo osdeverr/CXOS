@@ -12,9 +12,11 @@
 #include <fixed_vector.hpp>
 #include <kprintf.hpp>
 
+#include <stl/function.hpp>
+
 namespace cx::os::kernel::interrupts
 {
-    using InterruptHandlerPtr = void(*)(const InterruptRegisterState&);
+    using InterruptHandlerPtr = std::function<void(const InterruptRegisterState&)>;
     using InterruptHandlerList = FixedVector<InterruptHandlerPtr, 32>;
     using InterruptHandlerKey = void*;
     
@@ -24,7 +26,7 @@ namespace cx::os::kernel::interrupts
         InterruptHandlerKey AddHandler(InterruptHandlerPtr handler)
         {
             _handlers.push_back(handler);
-            return reinterpret_cast<InterruptHandlerKey>(handler);
+            return *reinterpret_cast<InterruptHandlerKey*>(&handler);
         }
         
         void HandleInterrupt(const InterruptRegisterState& regs)

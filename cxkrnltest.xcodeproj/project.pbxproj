@@ -14,6 +14,7 @@
 		5F514EA725781D0C00787455 /* panic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EA625781D0C00787455 /* panic.cpp */; };
 		5F514EB42579034D00787455 /* interrupts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EB32579034D00787455 /* interrupts.cpp */; };
 		5F514EB62579075200787455 /* interrupts_impl.asm in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EB52579075200787455 /* interrupts_impl.asm */; };
+		5F514EC2257A9C6600787455 /* pit_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5F514EC1257A9C6600787455 /* pit_timer.cpp */; };
 		5FADB7DB257672650003DE02 /* printf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7DA257672650003DE02 /* printf.cpp */; };
 		5FADB7DE257673070003DE02 /* u64helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7DD257673070003DE02 /* u64helpers.cpp */; };
 		5FADB7E22576A30A0003DE02 /* startup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FADB7E12576A30A0003DE02 /* startup.cpp */; };
@@ -67,6 +68,9 @@
 		5F514EBE257A848800787455 /* function.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = function.hpp; sourceTree = "<group>"; };
 		5F514EBF257A855900787455 /* shared_ptr.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = shared_ptr.hpp; sourceTree = "<group>"; };
 		5F514EC0257A8F9200787455 /* nullptr.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = nullptr.hpp; sourceTree = "<group>"; };
+		5F514EC1257A9C6600787455 /* pit_timer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = pit_timer.cpp; sourceTree = "<group>"; };
+		5F514EC3257A9FDA00787455 /* global_timer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = global_timer.hpp; sourceTree = "<group>"; };
+		5F514EC4257ABAC100787455 /* initializer_list.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = initializer_list.hpp; sourceTree = "<group>"; };
 		5FADB7DA257672650003DE02 /* printf.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = printf.cpp; sourceTree = "<group>"; };
 		5FADB7DC257672820003DE02 /* printf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = printf.h; sourceTree = "<group>"; };
 		5FADB7DD257673070003DE02 /* u64helpers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = u64helpers.cpp; sourceTree = "<group>"; };
@@ -103,6 +107,7 @@
 				5F514EBE257A848800787455 /* function.hpp */,
 				5F514EBF257A855900787455 /* shared_ptr.hpp */,
 				5F514EC0257A8F9200787455 /* nullptr.hpp */,
+				5F514EC4257ABAC100787455 /* initializer_list.hpp */,
 			);
 			path = stl;
 			sourceTree = "<group>";
@@ -131,6 +136,7 @@
 				5F0934382576FE4400D9DEA9 /* memory.cpp */,
 				5F514EA325781C7B00787455 /* stack_trace.cpp */,
 				5F514EA625781D0C00787455 /* panic.cpp */,
+				5F514EC1257A9C6600787455 /* pit_timer.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -168,6 +174,7 @@
 				5F514EB9257925A300787455 /* interrupt_controller.hpp */,
 				5F514EBD257A83E700787455 /* timer.hpp */,
 				5F514EBC257A83BF00787455 /* pit_timer.hpp */,
+				5F514EC3257A9FDA00787455 /* global_timer.hpp */,
 				5F514EAE2578FB3800787455 /* fixed_vector.hpp */,
 				5F514EAF2578FC8900787455 /* cx_throw.hpp */,
 			);
@@ -277,6 +284,7 @@
 				5FF3A94124276B470065AE01 /* kmain.cpp in Sources */,
 				5FF3A96024279C500065AE01 /* cxxnew.cpp in Sources */,
 				5F0934302576DB0200D9DEA9 /* vga_console.cpp in Sources */,
+				5F514EC2257A9C6600787455 /* pit_timer.cpp in Sources */,
 				5F514EA725781D0C00787455 /* panic.cpp in Sources */,
 				5FADB7DE257673070003DE02 /* u64helpers.cpp in Sources */,
 				5FADB7DB257672650003DE02 /* printf.cpp in Sources */,

@@ -11,6 +11,8 @@
 #include <stddef.h>
 #include <stl/nullptr.hpp>
 
+#include <kprintf.hpp>
+
 namespace cx::std
 {
     namespace detail
@@ -64,6 +66,12 @@ namespace cx::std
         shared_ptr(const shared_ptr& other)
         {
             AttachControlBlock(other._control);
+        }
+        
+        shared_ptr& operator=(const shared_ptr& other)
+        {
+            AttachControlBlock(other._control);
+            return *this;
         }
         
         shared_ptr(shared_ptr&& other)

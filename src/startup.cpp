@@ -22,11 +22,15 @@
 #include <stl/shared_ptr.hpp>
 #include <stl/function.hpp>
 
+#include <timer.hpp>
+#include <pit_timer.hpp>
+
 extern char __cx_kernel_start_marker, __cx_kernel_end_marker;
  
 namespace cx::os::kernel::detail
 {
     vga::VgaConsole gVgaConsole;
+    std::shared_ptr<timers::Timer> gTimer;
     
     const auto gKernelStart = &__cx_kernel_start_marker;
     const auto gKernelEnd = &__cx_kernel_end_marker;
@@ -42,10 +46,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     gVgaConsole.ToggleVgaCursor(true, 0, 15);
     
     kprintf("Loaded CXOS kernel @ 0x%08X..0x%08X\n", gKernelStart, gKernelEnd);
-    
-    kprintf("Setting up interrupts\n");
-    interrupts::SetupInterruptTable();
-     
+        
     kprintf("Setting up memory maps\n");
     auto entry = (mmap_entry_t*) boot_info.mmap_addr;
     
@@ -72,14 +73,13 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     memory::DumpMemoryRegions();
     
-    printf("Welcome to \e[94mCXOS\e[0m\n");
+    kprintf("Setting up interrupts\n");
+    interrupts::SetupInterruptTable();
     
-    interrupts::AddIrqHandler(interrupts::IrqType::PIT,
-                              [](const interrupts::InterruptRegisterState& regs)
-                              {
-                                  kprintf("Timer hit!\n");
-                              }
-                              );
+    kprintf("Setting up timers\n");
+    gTimer = std::make_shared<timers::PitTimer>(1000);
+    
+    printf("Welcome to \e[94mCXOS\e[0m\n");
     
     interrupts::AddIrqHandler(interrupts::IrqType::PS2Keyboard,
                               [](const interrupts::InterruptRegisterState& regs)
@@ -106,5 +106,5 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     printf("p1=%d; p2=%d\n", *p1, *p2);
     
-    // while(1) asm("sti; hlt");
+    while(1) asm("sti; hlt");
 }

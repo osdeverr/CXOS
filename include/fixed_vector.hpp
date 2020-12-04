@@ -10,6 +10,7 @@
 #define fixed_vector_h
 #include <stddef.h>
 #include <cx_throw.hpp>
+#include <stl/initializer_list.hpp>
 
 namespace cx
 {
@@ -77,6 +78,19 @@ namespace cx
         FixedVector() = default;
         FixedVector(const FixedVector&) = default;
         FixedVector(FixedVector&&) = default;
+        
+        template<class A>
+        FixedVector(const A& arr)
+        {
+            for(auto& v : arr)
+                push_back(v);
+        }
+        
+        FixedVector(std::initializer_list<T> ilist)
+        {
+            for(auto& v : ilist)
+                push_back(v);
+        }
         
         iterator begin()
         {
@@ -151,7 +165,7 @@ namespace cx
         }
         
     private:
-        value_type _items[Max] = {0};
+        value_type _items[Max] = {};
         size_t _count = 0;
         
         iterator CreateIterator(value_type& ref)

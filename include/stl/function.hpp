@@ -65,6 +65,8 @@ namespace cx::std
         : _cb(make_shared<detail::InvokeableImpl<F, R, Args...>>(func))
         {}
         
+        function& operator=(const function&) = default;
+        
         R operator()(Args... args) const
         {
             return _cb->Invoke(args...);
