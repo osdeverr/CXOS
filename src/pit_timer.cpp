@@ -34,10 +34,12 @@ cx::os::kernel::timers::PitTimer::PitTimer(TimerFrequency frequency)
 
 void cx::os::kernel::timers::PitTimer::SetFrequencyImpl(TimerFrequency frequency)
 {
-    // TODO: Set command stuff
-    ports::WriteB(kPitTimerPort_Command, 0x36);
+    // TODO: Fix frequencies!
+    return;
     
-    int divisor = 1193180 / frequency;
+    int divisor = detail::kPitTimerFreqBase / (int) frequency;
+    
+    ports::WriteB(kPitTimerPort_Command, 0x36);
     ports::WriteB(kPitTimerPort_Channel0, divisor & 0xFF);
     ports::WriteB(kPitTimerPort_Channel0, divisor >> 8);
 }

@@ -108,9 +108,12 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     [&timerCount](uint64_t ticks)
     {
         auto goal = timerCount + ticks;
+        kprintf("Sleeping %d..%d\n", (int) timerCount, (int) goal);
         
         while(timerCount < goal)
             asm("sti; hlt");
+        
+        kprintf("Slept %d ticks\n", (int) ticks);
     };
     
     printf("\n");
@@ -129,6 +132,6 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     while(1)
     {
         cprint();
-        sleep(1000);
+        sleep(18);
     }
 }
