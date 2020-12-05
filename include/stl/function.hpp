@@ -47,6 +47,9 @@ namespace cx::std
         private:
             F _func;
         };
+        
+        template<class R, class... Args>
+        using FunctionPtr = R(*)(Args...);
     }
     
     template<class R, class... Args>
@@ -65,15 +68,24 @@ namespace cx::std
         : _cb(make_shared<detail::InvokeableImpl<F, R, Args...>>(func))
         {}
         
+        // Optimization for raw function ptrs
+        function(detail::FunctionPtr<R, Args...> ptr)
+        : _ptr(ptr)
+        {}
+        
         function& operator=(const function&) = default;
         
         R operator()(Args... args) const
         {
-            return _cb->Invoke(args...);
+            if(_cb)
+                return _cb->Invoke(args...);
+            else
+                return _ptr(args...);
         }
         
     private:
         shared_ptr<detail::IInvokeable<R, Args...>> _cb = nullptr;
+        detail::FunctionPtr<R, Args...> _ptr = nullptr;
     };
 }
 

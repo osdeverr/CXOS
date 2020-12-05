@@ -96,6 +96,23 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                               }
                               );
     
+    volatile uint64_t timerCount = 0;
+    gTimer->AddFireCallback(
+                            [&timerCount]()
+                            {
+                                timerCount++;
+                            }
+    );
+    
+    auto sleep =
+    [&timerCount](uint64_t ticks)
+    {
+        auto goal = timerCount + ticks;
+        
+        while(timerCount < goal)
+            asm("sti; hlt");
+    };
+    
     printf("\n");
     printf("\e[93mish1.0\e[90m # \e[0m\n\n");
     
@@ -109,10 +126,9 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         printf("fCounter=%d\n", fCounter++);
     };
     
-    for(auto i = 0; i < 5; i++)
+    while(1)
+    {
         cprint();
-    
-    printf("p1=%d; p2=%d\n", *p1, *p2);
-    
-    while(1) asm("sti; hlt");
+        sleep(1000);
+    }
 }

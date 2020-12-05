@@ -13,7 +13,7 @@
 
 namespace cx::os::kernel::timers::detail
 {
-    constexpr auto kPitTimerFreqBase = 1193180;
+    constexpr auto kPitTimerFreqBase = 1193182;
 }
 
 cx::os::kernel::timers::PitTimer::PitTimer(TimerFrequency frequency)
@@ -37,7 +37,7 @@ void cx::os::kernel::timers::PitTimer::SetFrequencyImpl(TimerFrequency frequency
     // TODO: Set command stuff
     ports::WriteB(kPitTimerPort_Command, 0x36);
     
-    int divisor = detail::kPitTimerFreqBase / frequency;
+    int divisor = 1193180 / frequency;
     ports::WriteB(kPitTimerPort_Channel0, divisor & 0xFF);
     ports::WriteB(kPitTimerPort_Channel0, divisor >> 8);
 }
