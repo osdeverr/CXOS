@@ -1,1 +1,3 @@
+./toolchain.cfg
+*.xcodeproj
 build/
