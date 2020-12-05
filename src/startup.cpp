@@ -25,6 +25,9 @@
 #include <timer.hpp>
 #include <pit_timer.hpp>
 
+#include <ps2_protocol.hpp>
+#include <ps2_keyboard.hpp>
+
 extern char __cx_kernel_start_marker, __cx_kernel_end_marker;
  
 namespace cx::os::kernel::detail
@@ -84,7 +87,12 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     interrupts::AddIrqHandler(interrupts::IrqType::PS2Keyboard,
                               [](const interrupts::InterruptRegisterState& regs)
                               {
-                                  kprintf("I hit the KEY!\n");
+                                  auto raw_sc = ports::ReadB(ps2::kPs2ControllerPort_Data);
+                                  auto sc = raw_sc &~ ps2::kPs2KeyboardScancodeFlags_KeyReleased;
+                                  auto key = ps2::ResolveKeyScancode(sc);
+                                  auto released = raw_sc & ps2::kPs2KeyboardScancodeFlags_KeyReleased;
+                                  
+                                  kprintf("Key %s => (sc=%d, key='%c')\n", (released) ? "released" : "pressed", sc, key);
                               }
                               );
     
