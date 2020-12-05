@@ -1,4 +1,4 @@
 #!/bin/bash
 
-./build.sh
+./build.sh || exit 1
 ./run.sh
