@@ -17,7 +17,7 @@ set(CMAKE_ASM_FLAGS "-f elf")
 set(CMAKE_CXX_FLAGS "-fno-pic -m32 -std=c++17 -fpermissive -ffreestanding -fno-exceptions -fno-rtti -nostdlib -DCX_KERNEL -DCXK_ARCH=$(ARCH)")
 set(LD_FLAGS "-melf_i386 -T ${LDSCRIPT}")
 
-set(CMAKE_CXX_LINK_EXECUTABLE "ld ${LD_FLAGS} <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
+set(CMAKE_CXX_LINK_EXECUTABLE "${CXOS_LINKER} ${LD_FLAGS} <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c src/*.hpp src/*.h src/*.asm)
 add_executable(${TARGET} ${SRCS})
