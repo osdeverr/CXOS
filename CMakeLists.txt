@@ -52,4 +52,4 @@ set(CMAKE_CXX_LINK_EXECUTABLE "${CXOS_LINKER} ${LD_FLAGS} <OBJECTS> -o <TARGET> 
 
 dir_to_var_recurse(src SRCS)
 add_executable(${TARGET} ${SRCS})
-target_include_directories(${TARGET} PRIVATE include/)
+target_include_directories(${TARGET} PRIVATE src/)
