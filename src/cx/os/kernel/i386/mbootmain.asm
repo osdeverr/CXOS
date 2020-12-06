@@ -1,5 +1,6 @@
 ; U365 boot code, loaded by GRUB bootloader.
 ; Here's some constants needed for GRUB with annotations.
+section .multiboot
 MBALIGN equ 1<<0 ; Align flag
 MEMINFO equ 1<<1 ; Memory info flag, so GRUB will give us the memory info in MB structure.
 VBE_MODE equ 1<<2 ; VBE mode flag. GRUB will set it for us and provide info about it.
@@ -20,7 +21,7 @@ section .bootstrap_stack, nobits ; We're in bootstrap_stack section now.
 stack_bottom:
 resb 65535 ; 64 KiB for the stack.
 stack_top: ; Start of the stack.
-section .text ; Finally. Start of the code in .text section.
+section .text
 global _start ; We'll use that as a kernel entry point.
 ; _start function. Kernel entry point, it sets up the stack and calls kernel_main, the actual C kernel.
 _start:
@@ -44,4 +45,6 @@ _start:
 	; If the kernel someway returned (btw it cannot happen because of while(1)), just halt.
 	cli ; Disable the interrupts, so no IRQs can happen.
 	hlt ; Halt the CPU - OS kernel is stopped.
+
+section .text
 

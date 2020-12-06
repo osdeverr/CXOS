@@ -44,3 +44,37 @@ cx::os::kernel::pci::PciDevType cx::os::kernel::pci::GetPciDeviceType(PciBus bus
     
     return {dev_class, dev_subclass};
 }
+
+cx::os::kernel::pci::PciHdrType cx::os::kernel::pci::GetPciDeviceHdrType(PciBus bus, PciSlot slot, PciFunction function)
+{
+    uint8_t byte = detail::PciReadConfigWord(bus, slot, function, kPciHeaderOffset_HeaderType);
+    return (PciHdrType) byte;
+}
+
+cx::os::kernel::pci::PciBar cx::os::kernel::pci::GetPciDeviceBar(PciBus bus, PciSlot slot, PciFunction function, size_t bar_id)
+{
+    auto hdr_type = GetPciDeviceHdrType(bus, slot, function);
+    if(hdr_type &~ kPciHdrType_MultipleFuncs != kPciHdrType_Regular)
+        return {};
+    
+    uint8_t off = bar_id * 2;
+    uint16_t bar_low  = detail::PciReadConfigWord(bus, slot, function, kPciHeaderOffset_BarAddrBase + off);
+    uint16_t bar_high = detail::PciReadConfigWord(bus, slot, function, kPciHeaderOffset_BarAddrBase + off + 1);
+    if((bar_low & 1) == 0)
+    {
+        if((bar_low & ~0b110) == 0x00) //32-bit bar
+        {
+            uint32_t ret = (uint32_t) bar_low | (uint32_t) (bar_high << 16);
+            ret &= ~0b1111;
+            return {PciBarType::MemoryMapped, ret};
+        }
+    }
+    else
+    {
+        uint32_t ret = (uint32_t) bar_low | (uint32_t) (bar_high << 16);
+        ret &= ~0b11;
+        return {PciBarType::PortIO, ret};
+    }
+    
+    return {};
+}

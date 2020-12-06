@@ -106,8 +106,11 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                 if(vendor != kInvalidVendorId)
                 {
                     auto type = GetPciDeviceType(bus, slot, 0);
+                    auto hdr = GetPciDeviceHdrType(bus, slot, 0);
+                    
                     kprintf("PCI @ %02u:%02u.0 => 0x%04X-0x%04X\n", (int) bus, (int) slot, (int) vendor, (int) device);
                     kprintf("      class=0x%02X subclass=0x%02X\n", (int) type.dev_class, (int) type.dev_subclass);
+                    kprintf("      hdr_type=0x%02X\n", (int) hdr);
                 }
             }
         }
@@ -124,6 +127,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         auto rsdp = reinterpret_cast<AcpiRsdpV1*>(ptr);
         auto rsdt = rsdp->rsdt;
         
+        /*
         printf("\n");
         kprintf("\e[92mRSDP\e[0m: Found @ \e[93m0x%08X\e[0m:\n", rsdp);
         kprintf("      Valid=%d\n", rsdp->IsValid());
@@ -135,6 +139,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         int i = 1;
         for(auto& table : rsdt->GetTables())
             kprintf("      Table='%c%c%c%c' (l=%d)\n", table->signature[0], table->signature[1], table->signature[2], table->signature[3], table->length);
+         */
         
         auto fadt = rsdt->FindTable<AcpiFadt>();
         if(fadt && 0)
