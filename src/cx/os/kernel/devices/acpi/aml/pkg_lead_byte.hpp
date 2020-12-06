@@ -13,9 +13,9 @@ namespace cx::os::kernel::acpi::aml
 {
     struct PkgLeadByte
     {
-        int byte_length : 2;
-        int size_if_0byte : 2;
         int lsb_nibble : 4;
+        int size_if_0byte : 2;
+        int byte_length : 2;
     } __attribute__((packed));
 }
 

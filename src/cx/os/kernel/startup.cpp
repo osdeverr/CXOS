@@ -35,6 +35,8 @@
 #include <cx/os/kernel/devices/acpi/aml/pkg_lead_byte.hpp>
 #include <cx/os/kernel/devices/acpi/aml/aml_opcode.hpp>
 
+#include <cx/os/kernel/devices/pci/pci.hpp>
+
 #include <printf.h>
 #include <string.h>
 
@@ -91,6 +93,25 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     kprintf("Setting up timers\n");
     gTimer = std::make_shared<timers::PitTimer>(1000);
+    
+    {
+        using namespace pci;
+        for(PciBus bus = 0; bus < 256; bus++)
+        {
+            for(PciSlot slot = 0; slot < 32; slot++)
+            {
+                auto vendor = GetPciDeviceVendor(bus, slot, 0);
+                auto device = GetPciDeviceId(bus, slot, 0);
+                
+                if(vendor != kInvalidVendorId)
+                {
+                    auto type = GetPciDeviceType(bus, slot, 0);
+                    kprintf("PCI @ %02u:%02u.0 => 0x%04X-0x%04X\n", (int) bus, (int) slot, (int) vendor, (int) device);
+                    kprintf("      class=0x%02X subclass=0x%02X\n", (int) type.dev_class, (int) type.dev_subclass);
+                }
+            }
+        }
+    }
         
     {
         using namespace acpi;
@@ -116,7 +137,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
             kprintf("      Table='%c%c%c%c' (l=%d)\n", table->signature[0], table->signature[1], table->signature[2], table->signature[3], table->length);
         
         auto fadt = rsdt->FindTable<AcpiFadt>();
-        if(fadt)
+        if(fadt && 0)
         {
             kprintf("      FADT Valid=%d\n", fadt->IsValid());
             kprintf("      Preferred Power Profile=%d\n", fadt->preferred_power_profile);
@@ -132,7 +153,8 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
             
             auto dsdt_length = (dsdt->length - sizeof(AcpiSdtBase));
             auto reader = aml::StreamReader(dsdt->aml_code, dsdt->aml_code + dsdt_length);
-            
+             
+            /*
             while(!reader.IsEof())
             {
                 using namespace aml;
@@ -159,21 +181,23 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                     for(auto i = 0; i < 4; i++)
                     {
                         auto c = reader.Read<char>();
-                        kprintf("%2X\n", c);
                         name[i] = c;
                     }
                     
+                    kprintf("     Object Length: %d\n", length);
                     kprintf("     Object Name: %s\n", name);
+                    
+                    auto the_opcode = reader.Read<AmlOpcode>();
+                    kprintf("     NEXT opcode: 0x%02X\n", the_opcode);
                     
                     break;
                 }
             }
-            
-            kprintf("0x%02X\n", dsdt->aml_code[0]);
+             */
         }
         else
         {
-            kprintf("      \e[91mFADT table NOT found.\e[0m");
+            kprintf("\e[91m ! FADT table NOT found.\e[0m");
         }
         
         printf("\n");

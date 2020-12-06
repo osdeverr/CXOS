@@ -14,7 +14,7 @@ namespace cx::os::kernel::acpi::aml
 {
     enum class AmlOpcode : uint8_t
     {
-        ScopeOp = 0x20
+        ScopeOp = 0x10
     };
 }
 
