@@ -35,6 +35,7 @@ namespace cx::os::kernel::pci
         kPciHeaderOffset_HeaderType = 7,
         kPciHeaderOffset_ClassSubClass = 10,
         kPciHeaderOffset_BarAddrBase = 16,
+        kPciHeaderOffset_IrqLine = 0x3C,
     };
 }
 

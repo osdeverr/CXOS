@@ -36,6 +36,7 @@
 #include <cx/os/kernel/devices/acpi/aml/aml_opcode.hpp>
 
 #include <cx/os/kernel/devices/pci/pci.hpp>
+#include <cx/os/kernel/devices/net/rtl8139/rtl8139.hpp>
 
 #include <printf.h>
 #include <string.h>
@@ -107,14 +108,18 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                 {
                     auto type = GetPciDeviceType(bus, slot, 0);
                     auto hdr = GetPciDeviceHdrType(bus, slot, 0);
+                    auto bar0 = GetPciDeviceBar(bus, slot, 0, 0);
                     
                     kprintf("PCI @ %02u:%02u.0 => 0x%04X-0x%04X\n", (int) bus, (int) slot, (int) vendor, (int) device);
                     kprintf("      class=0x%02X subclass=0x%02X\n", (int) type.dev_class, (int) type.dev_subclass);
                     kprintf("      hdr_type=0x%02X\n", (int) hdr);
+                    kprintf("      bar0=(type=%d; addr=0x%08X)\n", (int) bar0.type, (uint16_t) bar0.addr);
                 }
             }
         }
     }
+    
+    net::rtl8139::TryInitialize();
         
     {
         using namespace acpi;

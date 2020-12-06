@@ -5,4 +5,5 @@ source configs.shlib;
 path=$1
 if [ -z $path ]; then path="build/CXOS"; fi
 
-"$(config_get CXOS_QEMU_PATH)" -m 256M -kernel $path -device rtl8139,id=cxos_nic0
+"$(config_get CXOS_QEMU_PATH)" -m 256M -kernel $path \
+                               -device rtl8139,id=cxos_nic0

@@ -58,7 +58,9 @@ namespace cx::os::kernel::interrupts
         ATAMaster,
         ATASlave,
         
-        Count
+        Count,
+        
+        NoIrq = 0xFF
     };
 
     

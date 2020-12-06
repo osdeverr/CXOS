@@ -78,3 +78,8 @@ cx::os::kernel::pci::PciBar cx::os::kernel::pci::GetPciDeviceBar(PciBus bus, Pci
     
     return {};
 }
+
+cx::os::kernel::interrupts::IrqType cx::os::kernel::pci::GetPciDeviceIrqLine(PciBus bus, PciSlot slot, PciFunction function)
+{
+    return (interrupts::IrqType) (detail::PciReadConfigWord(bus, slot, function, kPciHeaderOffset_IrqLine) & 0xFF);
+}
