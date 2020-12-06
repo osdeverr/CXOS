@@ -27,8 +27,10 @@
 #include <cx/os/kernel/devices/ps2/ps2_protocol.hpp>
 #include <cx/os/kernel/devices/ps2/ps2_keyboard.hpp>
 
-#include <printf.h>
+#include <cx/os/kernel/devices/acpi/acpi_rsdp_v1.hpp>
 
+#include <printf.h>
+#include <string.h>
 
 extern char __cx_kernel_start_marker, __cx_kernel_end_marker;
  
@@ -83,6 +85,26 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     kprintf("Setting up timers\n");
     gTimer = std::make_shared<timers::PitTimer>(1000);
+        
+    {
+        using namespace acpi;
+        
+        char* ptr = nullptr;
+        
+        while(strncmp(ptr, AcpiRsdpValidSignature, sizeof(AcpiRsdpValidSignature)))
+            ptr += 16;
+        
+        auto rsdp = reinterpret_cast<AcpiRsdpV1*>(ptr);
+        auto rsdt = rsdp->rsdt;
+        
+        printf("\n");
+        kprintf("\e[92mRSDP\e[0m: Found @ \e[93m0x%08X\e[0m:\n", rsdp);
+        kprintf("      Valid=%d\n", rsdp->IsValid());
+        kprintf("      ACPI Revision=%d\n", rsdp->acpi_revision);
+        kprintf("      RSDT Pointer=0x%08X\n", rsdt);
+        kprintf("      RSDT Signature=%c%c%c%c\n", rsdt->signature[0], rsdt->signature[1], rsdt->signature[2], rsdt->signature[3]);
+        printf("\n");
+    }
     
     printf("Welcome to \e[94mCXOS\e[0m\n");
     
