@@ -28,6 +28,12 @@
 #include <cx/os/kernel/devices/ps2/ps2_keyboard.hpp>
 
 #include <cx/os/kernel/devices/acpi/acpi_rsdp_v1.hpp>
+#include <cx/os/kernel/devices/acpi/acpi_fadt.hpp>
+
+#include <cx/os/kernel/devices/acpi/aml/stream_reader.hpp>
+#include <cx/os/kernel/devices/acpi/aml/scope_def.hpp>
+#include <cx/os/kernel/devices/acpi/aml/pkg_lead_byte.hpp>
+#include <cx/os/kernel/devices/acpi/aml/aml_opcode.hpp>
 
 #include <printf.h>
 #include <string.h>
@@ -102,7 +108,74 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         kprintf("      Valid=%d\n", rsdp->IsValid());
         kprintf("      ACPI Revision=%d\n", rsdp->acpi_revision);
         kprintf("      RSDT Pointer=0x%08X\n", rsdt);
-        kprintf("      RSDT Signature=%c%c%c%c\n", rsdt->signature[0], rsdt->signature[1], rsdt->signature[2], rsdt->signature[3]);
+        kprintf("      RSDT Valid=%d\n", rsdt->IsValid());
+        kprintf("      RSDT Signature='%c%c%c%c'\n", rsdt->signature[0], rsdt->signature[1], rsdt->signature[2], rsdt->signature[3]);
+        
+        int i = 1;
+        for(auto& table : rsdt->GetTables())
+            kprintf("      Table='%c%c%c%c' (l=%d)\n", table->signature[0], table->signature[1], table->signature[2], table->signature[3], table->length);
+        
+        auto fadt = rsdt->FindTable<AcpiFadt>();
+        if(fadt)
+        {
+            kprintf("      FADT Valid=%d\n", fadt->IsValid());
+            kprintf("      Preferred Power Profile=%d\n", fadt->preferred_power_profile);
+            kprintf("      SCI Interrupt=%d\n", fadt->sci_interrupt);
+            kprintf("      SMI Command Port=0x%02X\n", fadt->smi_command_port);
+            kprintf("      ACPI On  Byte=0x%02X\n", fadt->acpi_enable);
+            kprintf("      ACPI Off Byte=0x%02X\n", fadt->acpi_disable);
+            
+            ports::WriteB(fadt->smi_command_port, fadt->acpi_enable);
+            
+            auto dsdt = fadt->dsdt;
+            kprintf("      DSDT=0x%08X (valid=%d, len=%d, oem=0x%08X)\n", dsdt, dsdt->IsValid(), dsdt->length, dsdt->oem_id);
+            
+            auto dsdt_length = (dsdt->length - sizeof(AcpiSdtBase));
+            auto reader = aml::StreamReader(dsdt->aml_code, dsdt->aml_code + dsdt_length);
+            
+            while(!reader.IsEof())
+            {
+                using namespace aml;
+                auto opcode = reader.Read<AmlOpcode>();
+                if(opcode == AmlOpcode::ScopeOp)
+                {
+                    kprintf("Caught ScopeOp\n");
+                    
+                    auto pkg = reader.Read<PkgLeadByte>();
+                    uint32_t length = 0;
+                    uint8_t b_offset = 4;
+                    
+                    if(pkg.byte_length)
+                        length = pkg.size_if_0byte;
+                    else
+                        length |= pkg.lsb_nibble;
+                    
+                    for(auto i = 0; i < pkg.byte_length; i++, b_offset += 8)
+                        length |= (reader.Read<uint8_t>() << b_offset);
+                    
+                    kprintf("     PkgLeadByte: (l=%d bl=%d) sizeof=%d\n", length, pkg.byte_length, sizeof pkg);
+                     
+                    char name[5] = {0};
+                    for(auto i = 0; i < 4; i++)
+                    {
+                        auto c = reader.Read<char>();
+                        kprintf("%2X\n", c);
+                        name[i] = c;
+                    }
+                    
+                    kprintf("     Object Name: %s\n", name);
+                    
+                    break;
+                }
+            }
+            
+            kprintf("0x%02X\n", dsdt->aml_code[0]);
+        }
+        else
+        {
+            kprintf("      \e[91mFADT table NOT found.\e[0m");
+        }
+        
         printf("\n");
     }
     

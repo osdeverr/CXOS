@@ -8,11 +8,12 @@
 
 #ifndef acpi_xsdt_h
 #define acpi_xsdt_h
-#include <cx/os/kernel/devices/acpi/acpi_sdt_base.hpp>
+#include <cx/os/kernel/devices/acpi/acpi_root_sdt_base.hpp>
+#include <cx/os/kernel/devices/acpi/acpi_pointers.hpp>
 
 namespace cx::os::kernel::acpi
 {
-    struct AcpiXsdt : AcpiSdtBase, AcpiValidatable<AcpiXsdt>
+    struct AcpiXsdt : AcpiRootSdtBase<Acpi64BitPointer>
     {
         static constexpr auto AcpiSdtSignature = "XSDT";
     };

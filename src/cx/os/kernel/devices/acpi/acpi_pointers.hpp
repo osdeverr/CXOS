@@ -39,14 +39,24 @@ namespace cx::os::kernel::acpi
             return (PtrT*) _ptr;
         }
         
-        PtrT& operator*()
+        PtrT& operator*() const
         {
             return *(PtrT*) *this;
         }
         
-        PtrT* operator->()
+        PtrT* operator->() const
         {
             return (PtrT*) *this;
+        }
+        
+        bool operator==(const AcpiPointerConvertibleBase<BaseT, PtrT>& other) const
+        {
+            return _ptr == other._ptr;
+        }
+        
+        bool operator!=(const AcpiPointerConvertibleBase<BaseT, PtrT>& other) const
+        {
+            return !(*this == other);
         }
         
     private:

@@ -8,11 +8,12 @@
 
 #ifndef acpi_rsdt_h
 #define acpi_rsdt_h
-#include <cx/os/kernel/devices/acpi/acpi_sdt_base.hpp>
+#include <cx/os/kernel/devices/acpi/acpi_root_sdt_base.hpp>
+#include <cx/os/kernel/devices/acpi/acpi_pointers.hpp>
 
 namespace cx::os::kernel::acpi
 {
-    struct AcpiRsdt : AcpiSdtBase, AcpiValidatable<AcpiRsdt>
+    struct AcpiRsdt : AcpiRootSdtBase<Acpi32BitPointer>
     {
         static constexpr auto AcpiSdtSignature = "RSDT";
     };
