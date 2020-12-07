@@ -42,9 +42,11 @@ set(TARGET CXOS)
 set(LDSCRIPT "${CMAKE_SOURCE_DIR}/link.ld")
 
 set(CMAKE_ASM_COMPILER ${CXOS_ASM_COMPILER})
-set(CMAKE_CXX_COMPILER ${CXOS_C_COMPILER})
+set(CMAKE_C_COMPILER ${CXOS_C_COMPILER})
+set(CMAKE_CXX_COMPILER ${CXOS_CXX_COMPILER})
 
 set(CMAKE_ASM_FLAGS "-f elf")
+set(CMAKE_C_FLAGS "-fno-pic -m32 -ffreestanding -nostdlib -DCX_KERNEL -DCXK_ARCH=$(ARCH)")
 set(CMAKE_CXX_FLAGS "-fno-pic -m32 -std=c++17 -fpermissive -ffreestanding -fno-exceptions -fno-rtti -nostdlib -DCX_KERNEL -DCXK_ARCH=$(ARCH)")
 set(LD_FLAGS "-melf_i386 -T ${LDSCRIPT}")
 

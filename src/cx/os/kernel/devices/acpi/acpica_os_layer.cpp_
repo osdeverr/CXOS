@@ -1,0 +1,338 @@
+//
+//  acpica_os_layer.cpp
+//  Kernel
+//
+//  Created by Nikita Ivanov on 07.12.2020.
+//  Copyright © 2020 CXOS Team. All rights reserved.
+//
+
+#include <cx/os/kernel/kprintf.hpp>
+#include <cx/os/kernel/memory/memory.hpp>
+#include <cx/os/kernel/io/ports.hpp>
+
+extern "C"
+{
+#include <acpica/acpi.h>
+    
+    ACPI_STATUS AcpiOsInitialize(void)
+    {
+        kprintf("ACPICA: AcpiOsInitialize()\n");
+        return AE_OK;
+    }
+    
+    ACPI_STATUS AcpiOsTerminate(void)
+    {
+        kprintf("ACPICA: AcpiOsTerminate()\n");
+        return AE_OK;
+    }
+    
+    ACPI_PHYSICAL_ADDRESS AcpiOsGetRootPointer()
+    {
+        ACPI_PHYSICAL_ADDRESS Ret = 0;
+        AcpiFindRootPointer(&Ret);
+        return Ret;
+    }
+    
+    ACPI_STATUS AcpiOsPredefinedOverride(const ACPI_PREDEFINED_NAMES *PredefinedObject, ACPI_STRING *NewValue)
+    {
+        *NewValue = nullptr;
+        return AE_OK;
+    }
+    
+    ACPI_STATUS AcpiOsTableOverride(ACPI_TABLE_HEADER *ExistingTable, ACPI_TABLE_HEADER **NewTable)
+    {
+        *NewTable = nullptr;
+        return AE_OK;
+    }
+    
+    void *AcpiOsMapMemory(ACPI_PHYSICAL_ADDRESS PhysicalAddress, ACPI_SIZE Length)
+    {
+        return (void*) PhysicalAddress;
+    }
+    
+    void AcpiOsUnmapMemory(void *where, ACPI_SIZE length)
+    {
+        // todo
+    }
+    
+    ACPI_STATUS AcpiOsGetPhysicalAddress(void *LogicalAddress, ACPI_PHYSICAL_ADDRESS *PhysicalAddress)
+    {
+        *PhysicalAddress = (ACPI_PHYSICAL_ADDRESS) LogicalAddress;
+        return AE_OK;
+    }
+    
+    void *AcpiOsAllocate(ACPI_SIZE Size)
+    {
+        return malloc(Size);
+    }
+    
+    void AcpiOsFree(void *Memory)
+    {
+        return free(Memory);
+    }
+    
+    ACPI_THREAD_ID AcpiOsGetThreadId()
+    {
+        return 1; // todo
+    }
+    
+    void AcpiOsVprintf(const char *Format, va_list Args)
+    {
+        char buf[256] = "";
+        vsnprintf(buf, 256, Format, Args);
+        
+        printf("%s", buf);
+    }
+    
+    void ACPI_INTERNAL_VAR_XFACE AcpiOsPrintf(const char *Format, ...)
+    {
+        va_list vl;
+        va_start(vl, Format);
+        
+        AcpiOsVprintf(Format, vl);
+        
+        va_end(vl);
+    }
+    
+    UINT64 AcpiOsGetTimer()
+    {
+        return 1;
+    }
+    
+    ACPI_STATUS AcpiOsSignal(UINT32 Function, void *Info)
+    {
+        // This should never happen
+        if(!Info){
+            return AE_NO_MEMORY;
+        }
+        
+        switch (Function) {
+            case ACPI_SIGNAL_FATAL:
+            {
+                auto* fatal_info = static_cast<ACPI_SIGNAL_FATAL_INFO*>(Info);
+                
+                kprintf("ACPI fatal signal: Type %h, %h, %h \n", fatal_info->Type, fatal_info->Code, fatal_info->Argument);
+                asm volatile("cli; hlt;");
+                
+                break;
+            }
+                
+            case ACPI_SIGNAL_BREAKPOINT:
+                kprintf("ACPI Signal Breakpoint: %s\n", static_cast<char*>(Info));
+                return AE_NOT_EXIST;
+                
+            default:
+                return AE_BAD_PARAMETER;
+        }
+        
+        return AE_OK;
+    }
+    
+    ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS Address, UINT32 *Value, UINT32 Width)
+    {
+        using namespace cx::os::kernel;
+        switch(Width)
+        {
+            case 8:
+                *Value = ports::ReadB(Address);
+                return AE_OK;
+            case 16:
+                *Value = ports::ReadW(Address);
+                return AE_OK;
+            case 32:
+                *Value = ports::ReadL(Address);
+                return AE_OK;
+        };
+        
+        return AE_BAD_PARAMETER;
+    }
+    
+    ACPI_STATUS AcpiOsWritePort(ACPI_IO_ADDRESS Address, UINT32 Value, UINT32 Width)
+    {
+        using namespace cx::os::kernel;
+        switch(Width)
+        {
+            case 8:
+                ports::WriteB(Address, Value);
+                return AE_OK;
+            case 16:
+                ports::WriteW(Address, Value);
+                return AE_OK;
+            case 32:
+                ports::WriteL(Address, Value);
+                return AE_OK;
+        };
+        
+        return AE_BAD_PARAMETER;
+    }
+    
+    ACPI_STATUS AcpiOsCreateSemaphore (UINT32 MaxUnits, UINT32 InitialUnits, ACPI_SEMAPHORE *OutHandle)
+    {
+        *OutHandle = OutHandle;
+        return AE_OK;
+    }
+    
+    ACPI_STATUS AcpiOsDeleteSemaphore (ACPI_SEMAPHORE Handle)
+    {
+        return AE_OK;
+    }
+    
+    ACPI_STATUS AcpiOsWaitSemaphore (ACPI_SEMAPHORE Handle, UINT32 Units, UINT16 Timeout)
+    {
+        return AE_OK;
+    }
+    
+    ACPI_STATUS AcpiOsSignalSemaphore (ACPI_SEMAPHORE Handle, UINT32 Units)
+    {
+        return AE_OK;
+    }
+    
+    ACPI_STATUS AcpiOsReadPciConfiguration(ACPI_PCI_ID* PciId, UINT32 Reg, UINT64* Value, UINT32 Width){
+        return AE_BAD_PARAMETER;
+    }
+    
+    ACPI_STATUS AcpiOsWritePciConfiguration(ACPI_PCI_ID* PciId, UINT32 Reg, UINT64 Value, UINT32 Width){
+        return AE_BAD_PARAMETER;
+    }
+    
+    ACPI_STATUS
+    AcpiOsReadMemory (
+                      ACPI_PHYSICAL_ADDRESS   Address,
+                      UINT64                  *Value,
+                      UINT32                  Width)
+    {
+        auto ptr = (void*) Address;
+        ACPI_STATUS result = AE_OK;
+        
+        switch(Width)
+        {
+            case 8:
+                *Value = *(uint8_t*) ptr;
+                break;
+                
+            case 16:
+                *Value = *(uint16_t*) ptr;
+                break;
+                
+            case 32:
+                *Value = *(uint32_t*) ptr;
+                break;
+                
+            case 64:
+                *Value = *(uint64_t*) ptr;
+                break;
+                
+            default:
+                result = AE_BAD_PARAMETER;
+        }
+        
+        return result;
+    }
+    
+    ACPI_STATUS
+    AcpiOsWriteMemory (
+                      ACPI_PHYSICAL_ADDRESS   Address,
+                      UINT64                  Value,
+                      UINT32                  Width)
+    {
+        auto ptr = (void*) Address;
+        ACPI_STATUS result = AE_OK;
+        
+        switch(Width)
+        {
+            case 8:
+                *(uint8_t*) ptr = Value;
+                break;
+                
+            case 16:
+                *(uint16_t*) ptr = Value;
+                break;
+                
+            case 32:
+                *(uint32_t*) ptr = Value;
+                break;
+                
+            case 64:
+                *(uint64_t*) ptr = Value;
+                break;
+                
+            default:
+                result = AE_BAD_PARAMETER;
+        }
+        
+        return result;
+    }
+    
+    void
+    AcpiOsSleep (
+                 UINT64                  Milliseconds)
+    {}
+    
+    void
+    AcpiOsStall (
+                 UINT32                  Microseconds)
+    {}
+    
+    ACPI_STATUS
+    AcpiOsExecute (
+                   ACPI_EXECUTE_TYPE       Type,
+                   ACPI_OSD_EXEC_CALLBACK  Function,
+                   void                    *Context)
+    {
+        kprintf("AcpiOsExecute\n");
+        return AE_BAD_PARAMETER;
+    }
+    
+    void AcpiOsWaitEventsComplete()
+    {
+        kprintf("AcpiOsWaitEventsComplete\n");
+    }
+    
+    ACPI_STATUS
+    AcpiOsCreateLock (
+                      ACPI_SPINLOCK           *OutHandle)
+    {
+        *OutHandle = OutHandle;
+        return AE_OK;
+    }
+    
+    void
+    AcpiOsDeleteLock (
+                      ACPI_SPINLOCK           Handle)
+    {
+        // nothing
+    }
+    
+    ACPI_CPU_FLAGS
+    AcpiOsAcquireLock (
+                       ACPI_SPINLOCK           Handle)
+    {
+        return 0;
+    }
+    
+    void
+    AcpiOsReleaseLock (
+                       ACPI_SPINLOCK           Handle,
+                       ACPI_CPU_FLAGS          Flags)
+    {
+        
+    }
+    
+    ACPI_STATUS
+    AcpiOsPhysicalTableOverride (
+                                 ACPI_TABLE_HEADER       *ExistingTable,
+                                 ACPI_PHYSICAL_ADDRESS   *NewAddress,
+                                 UINT32                  *NewTableLength)
+    {
+        return AE_OK;
+    }
+    
+    ACPI_STATUS
+    AcpiOsEnterSleep (
+                      UINT8                   SleepState,
+                      UINT32                  RegaValue,
+                      UINT32                  RegbValue)
+    {
+        return AE_OK;
+    }
+}

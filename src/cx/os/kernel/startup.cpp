@@ -147,7 +147,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
          */
         
         auto fadt = rsdt->FindTable<AcpiFadt>();
-        if(fadt && 0)
+        if(fadt)
         {
             kprintf("      FADT Valid=%d\n", fadt->IsValid());
             kprintf("      Preferred Power Profile=%d\n", fadt->preferred_power_profile);
@@ -161,10 +161,10 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
             auto dsdt = fadt->dsdt;
             kprintf("      DSDT=0x%08X (valid=%d, len=%d, oem=0x%08X)\n", dsdt, dsdt->IsValid(), dsdt->length, dsdt->oem_id);
             
+            /*
             auto dsdt_length = (dsdt->length - sizeof(AcpiSdtBase));
             auto reader = aml::StreamReader(dsdt->aml_code, dsdt->aml_code + dsdt_length);
-             
-            /*
+            
             while(!reader.IsEof())
             {
                 using namespace aml;
