@@ -243,19 +243,27 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         using namespace fs;
         
         FsDirectory root{"", nullptr};
-        root.AddDirectoryEntry(std::make_shared<FsDirectory>("bin"));
-        root.AddDirectoryEntry(std::make_shared<FsDirectory>("usr"));
-        root.AddDirectoryEntry(std::make_shared<FsDirectory>("home"));
-        root.AddDirectoryEntry(std::make_shared<FsFile>(".passwd"));
+        
+        auto bin = std::make_shared<FsDirectory>("bin");
+        auto usr = std::make_shared<FsDirectory>("usr");
+        auto home = std::make_shared<FsDirectory>("home");
+        bin->AddDirectoryEntry(std::make_shared<FsFile>("ish", nullptr, 25591));
+        usr->AddDirectoryEntry(std::make_shared<FsDirectory>("share"));
+        home->AddDirectoryEntry(std::make_shared<FsDirectory>("cxos-install"));
+        
+        root.AddDirectoryEntry(bin);
+        root.AddDirectoryEntry(usr);
+        root.AddDirectoryEntry(home);
+        root.AddDirectoryEntry(std::make_shared<FsFile>(".passwd", nullptr, 584));
         
         std::function<void(const FsNode&, int)> printout;
         printout =
         [&printout](const FsNode& node, int tabs)
         {
             auto tabulate =
-            [tabs]()
+            [tabs](int extra = 0)
             {
-                for(auto i = 0; i < tabs; i++)
+                for(auto i = 0; i < tabs + extra; i++)
                     printf("    ");
             };
             
@@ -275,6 +283,15 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                     {
                         printout(*entry, tabs + 1);
                     }
+                    break;
+                }
+                case FsNodeType::File:
+                {
+                    printf("\e[32mFsFile\e[0m\n", type);
+                    
+                    auto file = node.As<FsFile>();
+                    tabulate(1);
+                    printf("Size: %u bytes\n", file->GetFileSize());
                     break;
                 }
                 default:
