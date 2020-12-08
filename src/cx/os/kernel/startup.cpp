@@ -91,10 +91,12 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     kprintf("Setting up interrupts\n");
     interrupts::SetupInterruptTable();
+    CX_OS_IRQS_ON();
     
     kprintf("Setting up timers\n");
     gTimer = std::make_shared<timers::PitTimer>(1000);
     
+    kprintf("Setting up PCI\n");
     {
         using namespace pci;
         for(PciBus bus = 0; bus < 256; bus++)
@@ -119,8 +121,10 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         }
     }
     
+    kprintf("Setting up networking\n");
     net::rtl8139::TryInitialize();
-        
+    
+    kprintf("Setting up ACPI\n");
     {
         using namespace acpi;
         
@@ -209,27 +213,17 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         {
             kprintf("\e[91m ! FADT table NOT found.\e[0m");
         }
-        
-        printf("\n");
     }
     
-    printf("Welcome to \e[94mCXOS\e[0m\n");
+    kprintf("Setting up keyboards\n");
+    ps2::InitializePs2Keyboard();
     
-    /*
-        Keyboard stuff
-     
-        interrupts::AddIrqHandler(interrupts::IrqType::PS2Keyboard,
-                                  [](const interrupts::InterruptRegisterState& regs)
-                                  {
-                                      auto raw_sc = ports::ReadB(ps2::kPs2ControllerPort_Data);
-                                      auto sc = raw_sc &~ ps2::kPs2KeyboardScancodeFlags_KeyReleased;
-                                      auto key = ps2::ResolveKeyScancode(sc);
-                                      auto released = raw_sc & ps2::kPs2KeyboardScancodeFlags_KeyReleased;
-     
-                                      kprintf("Key %s => (sc=%d, key='%c')\n", (released) ? "released" : "pressed", sc, key);
-                                  }
-                                  );
-     */
+    kprintf("Welcome to \e[94mCXOS\e[0m\n");
+    printf("\n");
+    printf("ish1.0# ");
+    
+    while(true)
+        printf("%c", ps2::Ps2KeyboardGetChar());
     
     while(true)
     {

@@ -112,6 +112,16 @@ namespace cx
             return CreateIterator(_items[_count]);
         }
         
+        const T& front() const
+        {
+            return _items[0];
+        }
+        
+        const T& back() const
+        {
+            return _items[_count - (_count > 0) ? 1 : 0];
+        }
+        
         size_t size() const
         {
             return _count;
@@ -120,6 +130,11 @@ namespace cx
         static constexpr size_t capacity()
         {
             return Max;
+        }
+        
+        bool empty() const
+        {
+            return size() == 0;
         }
                 
         iterator find(const value_type& value)
@@ -154,6 +169,15 @@ namespace cx
             auto& ref = _items[_count++];
             ref = value;
             return CreateIterator(ref);
+        }
+        
+        void pop_back()
+        {
+            if(_count > 0)
+            {
+                _count--;
+                _items[_count] = {};
+            }
         }
         
         void clear()
