@@ -40,6 +40,9 @@
 
 #include <cx/stl/list.hpp>
 
+#include <cx/os/kernel/fs/fs_directory.hpp>
+#include <cx/os/kernel/fs/fs_file.hpp>
+
 #include <printf.h>
 #include <string.h>
 
@@ -235,6 +238,53 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     auto six = ints.find(6);
     kprintf("six=%d\n", *six);
+    
+    {
+        using namespace fs;
+        
+        FsDirectory root{"", nullptr};
+        root.AddDirectoryEntry(std::make_shared<FsDirectory>("bin"));
+        root.AddDirectoryEntry(std::make_shared<FsDirectory>("usr"));
+        root.AddDirectoryEntry(std::make_shared<FsDirectory>("home"));
+        root.AddDirectoryEntry(std::make_shared<FsFile>(".passwd"));
+        
+        std::function<void(const FsNode&, int)> printout;
+        printout =
+        [&printout](const FsNode& node, int tabs)
+        {
+            auto tabulate =
+            [tabs]()
+            {
+                for(auto i = 0; i < tabs; i++)
+                    printf("    ");
+            };
+            
+            tabulate();
+            printf("/%s - ", node.GetName().AsCharPtr());
+            
+            auto type = node.GetType();
+            
+            switch(type)
+            {
+                case FsNodeType::Directory:
+                {
+                    printf("\e[32mFsDirectory\e[0m\n", type);
+                    
+                    auto dir = node.As<FsDirectory>();
+                    for(auto& entry : dir->GetDirectoryEntries())
+                    {
+                        printout(*entry, tabs + 1);
+                    }
+                    break;
+                }
+                default:
+                    printf("\e[33mUnknown node type {%d}\e[0m\n", type);
+                    break;
+            };
+        };
+        
+        printout(root, 1);
+    }
     
     printf("ish1.0# ");
     
