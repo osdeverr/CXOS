@@ -38,6 +38,8 @@
 #include <cx/os/kernel/devices/pci/pci.hpp>
 #include <cx/os/kernel/devices/net/rtl8139/rtl8139.hpp>
 
+#include <cx/stl/list.hpp>
+
 #include <printf.h>
 #include <string.h>
 
@@ -220,14 +222,26 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     kprintf("Welcome to \e[94mCXOS\e[0m\n");
     printf("\n");
+    
+    std::list<int> ints;
+    ints.push_back(4);
+    ints.push_back(5);
+    ints.push_back(6);
+    ints.push_back(10);
+    ints.push_front(14);
+    
+    for(auto& i : ints)
+        kprintf("%d\n", i);
+    
+    auto six = ints.find(6);
+    kprintf("six=%d\n", *six);
+    
     printf("ish1.0# ");
     
-    while(true)
-        printf("%c", ps2::Ps2KeyboardGetChar());
-    
-    while(true)
+    char c = 0;
+    while(c != '\n')
     {
-        CX_OS_IRQS_ON();
-        CX_OS_HALT_CPU();
+        c = ps2::Ps2KeyboardGetChar();
+        printf("%c", c);
     }
 }
