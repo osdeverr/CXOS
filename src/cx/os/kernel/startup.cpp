@@ -43,6 +43,7 @@
 #include <cx/os/kernel/fs/fs_directory.hpp>
 #include <cx/os/kernel/fs/fs_file.hpp>
 #include <cx/os/kernel/fs/fs.hpp>
+#include <cx/os/kernel/fs/fs_character_device.hpp>
 
 #include <printf.h>
 #include <string.h>
@@ -245,14 +246,73 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         
         auto& root = GetFilesystemRoot();
         
+        class VgaTtyStream : public IFsCharacterStream
+        {
+        public:
+            virtual bool IsOpen() const
+            {
+                return _open;
+            }
+            
+            virtual void Close()
+            {
+                _open = false;
+            }
+            
+            virtual FsStreamDescriptor GetStreamDescriptor() const
+            {
+                return 12;
+            }
+            
+            virtual bool IsEOF() const
+            {
+                return !_open;
+            }
+            
+            virtual FsCharacterByte ReadByte()
+            {
+                if(!_open)
+                    return kFsFileEOF;
+                
+                return ps2::Ps2KeyboardGetChar();
+            }
+            virtual void WriteByte(FsCharacterByte byte)
+            {
+                if(!_open)
+                    return;
+                
+                printf("%c", (char) byte);
+            }
+            
+        private:
+            bool _open = true;
+        };
+        
+        class VgaTtyDevice : public FsCharacterDevice
+        {
+        public:
+            VgaTtyDevice()
+            : FsCharacterDevice("tty0", false)
+            {}
+            
+            std::shared_ptr<IFsCharacterStream> OpenDeviceImpl()
+            {
+                return std::make_shared<VgaTtyStream>();
+            }
+        };
+        
         auto bin = std::make_shared<FsDirectory>("bin");
+        auto dev = std::make_shared<FsDirectory>("dev");
         auto usr = std::make_shared<FsDirectory>("usr");
         auto home = std::make_shared<FsDirectory>("home");
         bin->AddDirectoryEntry(std::make_shared<FsFile>("ish", nullptr, 25591));
+        auto tty = std::make_shared<VgaTtyDevice>();
+        dev->AddDirectoryEntry(tty);
         usr->AddDirectoryEntry(std::make_shared<FsDirectory>("share"));
         home->AddDirectoryEntry(std::make_shared<FsDirectory>("cxos-install"));
         
         root.AddDirectoryEntry(bin);
+        root.AddDirectoryEntry(dev);
         root.AddDirectoryEntry(usr);
         root.AddDirectoryEntry(home);
         
@@ -289,7 +349,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                         printout(*entry, tabs + 1);
                     }
                     break;
-                } 
+                }
                 case FsNodeType::RegularFile:
                 {
                     printf("\e[32mFsFile\e[0m\n", type);
@@ -297,6 +357,11 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                     auto file = node.As<FsFile>();
                     tabulate(1);
                     printf("Size: %u bytes\n", file->GetFileSize());
+                    break;
+                }
+                case FsNodeType::CharacterDevice:
+                {
+                    printf("\e[32mFsCharacterDevice\e[0m\n", type);
                     break;
                 }
                 default:
@@ -307,13 +372,13 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         
         printout(root, 1);
         
-        if(auto stream = passwd->OpenFileStream())
+        if(auto stream = tty->OpenDeviceStream())
         {
+            printf("Opened file: fd=%d @ 0x%08X | Open=%d\n", (int) stream->GetStreamDescriptor(), stream.get(), stream->IsOpen());
             int c = 0;
             while((c = stream->ReadByte()) != -1)
                 printf("%c", (char) c);
             printf("[EOF]\n");
-            stream->Close();
         }
         else
         {

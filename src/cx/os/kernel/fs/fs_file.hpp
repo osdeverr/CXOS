@@ -35,6 +35,11 @@ namespace cx::os::kernel::fs
             return _fsize;
         }
         
+        bool IsOpen() const
+        {
+            return _open;
+        }
+        
         std::shared_ptr<FsFileStream> OpenFileStream()
         {
             if(!_open)

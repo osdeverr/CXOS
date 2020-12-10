@@ -13,7 +13,7 @@
 
 namespace cx::os::kernel::fs
 {
-    using FsStreamDescriptor = uint64_t;
+    using FsStreamDescriptor = int;
     
     class IFsBasicStream
     {

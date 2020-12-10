@@ -49,11 +49,13 @@ namespace cx::std
         shared_ptr() = default;
         
         shared_ptr(nullptr_t)
+        : _control(nullptr)
         {}
         
         explicit shared_ptr(T* ptr)
         {
-            _control = new detail::SharedControlBlock<T>(ptr);
+            if(ptr)
+                _control = new detail::SharedControlBlock<T>(ptr);
         }
         
         /// FIXME: We have to check IsConvertible or something
@@ -87,7 +89,7 @@ namespace cx::std
         
         operator bool() const
         {
-            return _control != nullptr;
+            return _control != nullptr && _control->ptr != nullptr;
         }
         
         T& operator*()
@@ -108,6 +110,11 @@ namespace cx::std
         const T* operator->() const
         {
             return _control->ptr;
+        }
+        
+        T* get()
+        {
+            return (_control) ? _control->ptr : nullptr;
         }
         
     private:
