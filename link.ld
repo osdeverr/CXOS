@@ -6,7 +6,9 @@ SECTIONS
 	.text BLOCK(128K) : ALIGN(4K)
 	{
 		text_sect_phys_addr = .;
-		*(.multiboot)
+        *(.multiboot)
+        *(.init)
+        *(.fini)
 		*(.text)
 	}
 	.rodata BLOCK(16K) : ALIGN(4K)

@@ -9,6 +9,7 @@
 #ifndef string_h
 #define string_h
 #include <stddef.h>
+#include <stdint.h>
 
 inline size_t strlen(const char* str)
 {

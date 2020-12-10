@@ -13,12 +13,14 @@ namespace cx::os::kernel::fs
 {
     enum class FsNodeType
     {
-        FilesystemRoot,
         Directory,
-        File,
+        RegularFile,
+        
         Socket,
+        BlockDevice,
+        CharacterDevice,
+        
         SymLink,
-        HardLink
     };
 }
 

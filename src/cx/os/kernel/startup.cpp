@@ -42,6 +42,7 @@
 
 #include <cx/os/kernel/fs/fs_directory.hpp>
 #include <cx/os/kernel/fs/fs_file.hpp>
+#include <cx/os/kernel/fs/fs.hpp>
 
 #include <printf.h>
 #include <string.h>
@@ -242,7 +243,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     {
         using namespace fs;
         
-        FsDirectory root{"", nullptr};
+        auto& root = GetFilesystemRoot();
         
         auto bin = std::make_shared<FsDirectory>("bin");
         auto usr = std::make_shared<FsDirectory>("usr");
@@ -254,7 +255,10 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         root.AddDirectoryEntry(bin);
         root.AddDirectoryEntry(usr);
         root.AddDirectoryEntry(home);
-        root.AddDirectoryEntry(std::make_shared<FsFile>(".passwd", nullptr, 584));
+        
+        char passwd_data[] = "osdever=12345\ntest=123test";
+        auto passwd = std::make_shared<FsFile>(".passwd", passwd_data, sizeof passwd_data);
+        root.AddDirectoryEntry(passwd);
         
         std::function<void(const FsNode&, int)> printout;
         printout =
@@ -268,7 +272,8 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
             };
             
             tabulate();
-            printf("/%s - ", node.GetName().AsCharPtr());
+            auto name = node.GetName().AsCharPtr();
+            printf("/%s - ", name);
             
             auto type = node.GetType();
             
@@ -284,8 +289,8 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                         printout(*entry, tabs + 1);
                     }
                     break;
-                }
-                case FsNodeType::File:
+                } 
+                case FsNodeType::RegularFile:
                 {
                     printf("\e[32mFsFile\e[0m\n", type);
                     
@@ -301,6 +306,19 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         };
         
         printout(root, 1);
+        
+        if(auto stream = passwd->OpenFileStream())
+        {
+            int c = 0;
+            while((c = stream->ReadByte()) != -1)
+                printf("%c", (char) c);
+            printf("[EOF]\n");
+            stream->Close();
+        }
+        else
+        {
+            kprintf("\e[91m ! File could NOT open.\e[0m");
+        }
     }
     
     printf("ish1.0# ");
