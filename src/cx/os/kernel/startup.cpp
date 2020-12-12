@@ -45,6 +45,9 @@
 #include <cx/os/kernel/fs/fs.hpp>
 #include <cx/os/kernel/fs/fs_character_device.hpp>
 
+#include <cx/os/kernel/fs/tar/tar_header.hpp>
+#include <cx/os/kernel/initrd_tar.hpp>
+
 #include <printf.h>
 #include <string.h>
 
@@ -240,7 +243,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     
     auto six = ints.find(6);
     kprintf("six=%d\n", *six);
-    
+        
     {
         using namespace fs;
         
@@ -276,6 +279,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
                 
                 return ps2::Ps2KeyboardGetChar();
             }
+            
             virtual void WriteByte(FsCharacterByte byte)
             {
                 if(!_open)
@@ -291,8 +295,8 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         class VgaTtyDevice : public FsCharacterDevice
         {
         public:
-            VgaTtyDevice()
-            : FsCharacterDevice("tty0", false)
+            VgaTtyDevice(const char* name)
+            : FsCharacterDevice(name, false)
             {}
             
             std::shared_ptr<IFsCharacterStream> OpenDeviceImpl()
@@ -306,8 +310,10 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         auto usr = std::make_shared<FsDirectory>("usr");
         auto home = std::make_shared<FsDirectory>("home");
         bin->AddDirectoryEntry(std::make_shared<FsFile>("ish", nullptr, 25591));
-        auto tty = std::make_shared<VgaTtyDevice>();
+        
+        auto tty = std::make_shared<VgaTtyDevice>("tty0");
         dev->AddDirectoryEntry(tty);
+        
         usr->AddDirectoryEntry(std::make_shared<FsDirectory>("share"));
         home->AddDirectoryEntry(std::make_shared<FsDirectory>("cxos-install"));
         
@@ -371,13 +377,59 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         };
         
         printout(root, 1);
+                
+        {
+            auto data = build_initrd_tar;
+            auto header = reinterpret_cast<fs::tar::TarHeader*>(data);
+            
+            while(!strcmp(header->ustar_magic, "ustar"))
+            {
+                auto getsize = [](const char *in)
+                {
+                    
+                    unsigned int size = 0;
+                    unsigned int j;
+                    unsigned int count = 1;
+                    
+                    for (j = 11; j > 0; j--, count *= 8)
+                        size += ((in[j - 1] - '0') * count);
+                    
+                    return size;                    
+                };
+                
+                size_t size = getsize(header->file_size);
+                
+                kprintf("header.file_name=%s\n", header->file_name);
+                kprintf("header.file_size=%u\n\n", size);
+                /*
+                kprintf("header.file_mode=%s\n", header->file_mode);
+                kprintf("header.file_type=%c\n", header->file_type);
+                 */
+                
+                unsigned char* file = data + 512;
+                if((char) header->file_type == '0')
+                    printf("%s\n", file);
+                
+                data += ((size / 512) + 1) * 512;
+                
+                if (size % 512)
+                    data += 512;
+                
+                header = reinterpret_cast<fs::tar::TarHeader*>(data);
+            }
+        }
         
         if(auto stream = tty->OpenCharacterStream())
         {
             printf("Opened file: fd=%d @ 0x%08X | Open=%d\n", (int) stream->GetStreamDescriptor(), stream.get(), stream->IsOpen());
             int c = 0;
             while((c = stream->ReadByte()) != -1)
-                printf("%c", (char) c);
+            {
+                if(c == '\b')
+                    printf("\b \b");
+                else
+                    stream->WriteByte((char) c);
+            }
             printf("[EOF]\n");
         }
         else

@@ -28,6 +28,8 @@ void cx::os::kernel::vga::VgaConsole::SendCharacter(uint8_t c)
         {
             case '\n': _x = kConsoleWidth; break;
             case '\e': _esc = VgaEscapeState::WaitingForBracket; return;
+            case '\b': if(_x > 0) _x--; UpdateCursor(_x, _y); return;
+            case '\r': _x = 0; UpdateCursor(_x, _y); return;
             default: kFramebuffer[_y][_x] = {c, _fg, _bg}; break;
         };
         

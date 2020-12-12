@@ -38,6 +38,11 @@ namespace cx::std
             : _node(begin)
             {}
             
+            Node* GetRawListNode()
+            {
+                return _node;
+            }
+            
             T& operator*() const
             {
                 return _node->value;
@@ -186,6 +191,25 @@ namespace cx::std
                            {
                                return in == value;
                            });
+        }
+        
+        void erase(iterator target)
+        {
+            for(auto it = begin(); it != end(); it++)
+            {
+                if(it == target)
+                {
+                    auto node = it.GetRawListNode();
+                    node->prev->next = node->next;
+                    
+                    node->prev = nullptr;
+                    node->next = nullptr;
+                    
+                    delete node;
+                    
+                    return;
+                }
+            }
         }
         
     private:
