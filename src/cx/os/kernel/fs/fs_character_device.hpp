@@ -21,7 +21,7 @@ namespace cx::os::kernel::fs
         : FsNodeImpl<FsCharacterDevice>(name), _exclusive(exclusive)
         {}
         
-        std::shared_ptr<IFsCharacterStream> OpenDeviceStream()
+        std::shared_ptr<IFsCharacterStream> OpenCharacterStream()
         {
             return OpenDeviceImpl();
         }

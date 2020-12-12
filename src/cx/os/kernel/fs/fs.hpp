@@ -9,6 +9,9 @@
 #ifndef fs_h
 #define fs_h
 #include <cx/os/kernel/fs/fs_directory.hpp>
+#include <cx/os/kernel/fs/fs_basic_stream.hpp>
+#include <cx/os/kernel/fs/fs_character_stream.hpp>
+#include <cx/os/kernel/fs/fs_block_stream.hpp>
 
 namespace cx::os::kernel::fs
 {

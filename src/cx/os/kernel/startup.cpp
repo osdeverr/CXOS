@@ -372,7 +372,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         
         printout(root, 1);
         
-        if(auto stream = tty->OpenDeviceStream())
+        if(auto stream = tty->OpenCharacterStream())
         {
             printf("Opened file: fd=%d @ 0x%08X | Open=%d\n", (int) stream->GetStreamDescriptor(), stream.get(), stream->IsOpen());
             int c = 0;
@@ -382,7 +382,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         }
         else
         {
-            kprintf("\e[91m ! File could NOT open.\e[0m");
+            kprintf("\e[91m ! File could NOT be opened.\e[0m");
         }
     }
     

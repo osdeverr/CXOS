@@ -17,11 +17,11 @@ namespace cx::os::kernel::fs
     public:
         virtual ~IFsBlockStream() = default;
         
-        virtual size_t ReadBuffer(void* buffer, size_t size) = 0;
-        virtual size_t WriteBuffer(const void* buffer, size_t size) = 0;
-        
         virtual void Seek(FsSeekMode mode, size_t amount) = 0;
         virtual size_t Tell() const = 0;
+        
+        virtual size_t ReadBuffer(void* buffer, size_t size) = 0;
+        virtual size_t WriteBuffer(const void* buffer, size_t size) = 0;
     };
 }
 

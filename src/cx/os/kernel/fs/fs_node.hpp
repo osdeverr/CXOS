@@ -9,6 +9,11 @@
 #ifndef fs_node_h
 #define fs_node_h
 #include <cx/os/kernel/fs/fs_node_type.hpp>
+#include <cx/os/kernel/fs/fs_character_stream.hpp>
+#include <cx/os/kernel/fs/fs_block_stream.hpp>
+
+#include <cx/stl/shared_ptr.hpp>
+
 #include <string.h>
 
 namespace cx::os::kernel::fs
@@ -83,6 +88,16 @@ namespace cx::os::kernel::fs
         void ConnectParent(FsNode* parent)
         {
             _parent = parent;
+        }
+        
+        virtual std::shared_ptr<IFsCharacterStream> OpenCharacterStream()
+        {
+            return nullptr;
+        }
+        
+        virtual std::shared_ptr<IFsBlockStream> OpenBlockStream()
+        {
+            return nullptr;
         }
         
     protected:

@@ -40,7 +40,12 @@ namespace cx::os::kernel::fs
             return _open;
         }
         
-        std::shared_ptr<FsFileStream> OpenFileStream()
+        std::shared_ptr<IFsCharacterStream> OpenCharacterStream()
+        {
+            return OpenBlockStream();
+        }
+        
+        std::shared_ptr<IFsBlockStream> OpenBlockStream()
         {
             if(!_open)
             {
