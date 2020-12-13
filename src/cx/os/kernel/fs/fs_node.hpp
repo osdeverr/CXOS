@@ -56,6 +56,9 @@ namespace cx::os::kernel::fs
         : _type(type), _name(name), _parent(parent)
         {}
         
+        FsNode(const FsNode&) = delete;
+        FsNode(FsNode&&) = delete;
+        
     public:
         template<class T>
         T* As()

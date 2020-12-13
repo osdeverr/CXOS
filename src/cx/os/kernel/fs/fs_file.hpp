@@ -11,7 +11,6 @@
 #include <cx/os/kernel/fs/fs_node_impl.hpp>
 #include <cx/os/kernel/fs/fs_file_stream.hpp>
 
-#include <cx/os/kernel/memory/memory.hpp>
 #include <string.h>
 
 namespace cx::os::kernel::fs
@@ -20,9 +19,14 @@ namespace cx::os::kernel::fs
     {
     public:
         FsFile(const FsNodeName& name, const void* fdata, size_t fsize)
-        : FsNodeImpl<FsFile>(name), _fdata(malloc(fsize)), _fsize(fsize)
+        : FsNodeImpl<FsFile>(name), _fdata(new char[fsize]), _fsize(fsize)
         {
             memcpy(_fdata, fdata, _fsize);
+        }
+        
+        ~FsFile()
+        {
+            delete[] _fdata;
         }
         
         void* GetFileData()
