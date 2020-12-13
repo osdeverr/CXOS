@@ -9,6 +9,8 @@
 #include <cx/os/kernel/memory/memory.hpp>
 #include <cx/os/kernel/kprintf.hpp>
 
+// #define CX_OS_MEMORY_DEBUG
+
 namespace cx::os::kernel::memory::detail
 {
     MinList<MemoryRegion> gTheMemoryRegions;
@@ -40,7 +42,10 @@ void* cx::os::kernel::memory::AllocateMemory(size_t size)
     {
         if(region.free && region.size >= size)
         {
-            // kprintf("AllocateMemory (s=%d): Region @ 0x%08X (l=0x%08X) -> free=%d\n", size, &region, region.size, (int) region.free);
+#ifdef CX_OS_MEMORY_DEBUG
+            kprintf("AllocateMemory (s=%d): Region @ 0x%08X (l=0x%08X) -> free=%d\n", size, &region, region.size, (int) region.free);
+#endif
+            
             region.free = false;
             
             auto data = (&region + 1);
@@ -49,7 +54,9 @@ void* cx::os::kernel::memory::AllocateMemory(size_t size)
             if(diff)
                 AddMemoryRegion((char*) data + size, diff);
             
-            // DumpMemoryRegions();
+#ifdef CX_OS_MEMORY_DEBUG
+            DumpMemoryRegions();
+#endif
             return data;
         }
     }
@@ -60,8 +67,15 @@ void* cx::os::kernel::memory::AllocateMemory(size_t size)
 void cx::os::kernel::memory::FreeMemory(void* addr)
 {
     auto region = reinterpret_cast<MemoryRegion*>((char*) addr - sizeof(MemoryRegion));
+#ifdef CX_OS_MEMORY_DEBUG
+    kprintf("FreeMemory: Region @ 0x%08X (s=0x%08X) -> free=%d\n", region, region->size, (int) region->free);
+#endif
+    
     region->free = true;
-    // kprintf("FreeMemory: Region @ 0x%08X (s=0x%08X) -> free=%d\n", region, region->size, (int) region->free);
+    
+#ifdef CX_OS_MEMORY_DEBUG
+    DumpMemoryRegions();
+#endif
 }
  
 extern "C" void* malloc(int size)
