@@ -35,7 +35,8 @@ bool cx::os::kernel::fs::tar::ExtractTarballToDirectory(TarFile file, FsDirector
             
             auto name = FsNodeName{start, (size_t) (curr - start)};
             
-            curr++;
+            if(*curr == '/')
+                curr++;
             
             names.push_back(name);
             last = name;
