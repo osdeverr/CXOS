@@ -46,6 +46,7 @@
 #include <cx/os/kernel/fs/fs_character_device.hpp>
 
 #include <cx/os/kernel/fs/tar/tar_header.hpp>
+#include <cx/os/kernel/fs/tar/tar_extract.hpp>
 #include <cx/os/kernel/initrd_tar.hpp>
 
 #include <printf.h>
@@ -244,105 +245,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
     auto six = ints.find(6);
     kprintf("six=%d\n", *six);
     
-    {
-        using namespace fs;
-        using namespace tar;
-        
-        auto& root = GetFilesystemRoot();
-        
-        auto data = build_initrd_tar;
-        auto header = reinterpret_cast<TarHeader*>(data);
-        
-        while(!strcmp(header->ustar_magic, "ustar"))
-        {
-            auto getsize = [](const char *in)
-            {
-                
-                unsigned int size = 0;
-                unsigned int j;
-                unsigned int count = 1;
-                
-                for (j = 11; j > 0; j--, count *= 8)
-                    size += ((in[j - 1] - '0') * count);
-                
-                return size;
-            };
-            
-            size_t size = getsize(header->file_size);
-            /*
-             kprintf("header.file_mode=%s\n", header->file_mode);
-             kprintf("header.file_type=%c\n", header->file_type);
-             */
-            
-            std::list<FsNodeName> names;
-            FsNodeName last = "";
-            
-            const char* curr = header->file_name;
-            
-            while(*curr != '\0')
-            {
-                const char* start = curr;
-                while(*curr != '/' && *curr != '\0')
-                    curr++;
-                
-                auto name = FsNodeName{start, (size_t) (curr - start)};
-                
-                curr++;
-                
-                names.push_back(name);
-                last = name;
-            }
-            
-            kprintf("Path of %s: ", header->file_name);
-            for(auto& name : names)
-                printf("%s -> ", name.AsCharPtr());
-            
-            printf("\n");
-            
-            int i = 0;
-            auto dir = &GetFilesystemRoot();
-            for(auto& name : names)
-            {
-                if(i == names.size() - 1)
-                    break;
-                i++;
-                
-                auto node = dir->FindDirectoryEntry(name);
-                // kprintf("Path stuffs: ent='%s' in '%s'; node=0x%08X\n", name.AsCharPtr(), dir->GetName().AsCharPtr(), node);
-                
-                dir = node->As<FsDirectory>();
-            }
-            
-            // kprintf("Path stuffs: last=%s\n", last.AsCharPtr());
-            
-            switch(header->file_type)
-            {
-                case TarFileType::Regular:
-                    // kprintf("Path stuffs: Adding FsFile @ '%s'\n", last.AsCharPtr());
-                    dir->AddDirectoryEntry(std::make_shared<FsFile>(last, data + 512, size));
-                    break;
-                case TarFileType::Directory:
-                    // kprintf("Path stuffs: Adding FsDirectory @ '%s'\n", last.AsCharPtr());
-                    dir->AddDirectoryEntry(std::make_shared<FsDirectory>(last));
-                    break;
-                    
-                default:
-                    kprintf("\e[33mTAR => Unpacking: Invalid node type {%d}\e[0m\n", (int) header->file_type);
-            }
-            // kprintf("\n");
-            
-            data += sizeof(TarHeader);
-            data += ((size / 512)) * 512;
-            
-            if (size % 512)
-                data += 512;
-            
-            header = reinterpret_cast<TarHeader*>(data);
-        }
-        
-        kprintf("Are we done?\n");
-        // while(1);
-    }
+    fs::tar::ExtractTarballToDirectory(fs::tar::TarFile{build_initrd_tar}, fs::GetFilesystemRoot());
         
     {
         using namespace fs;

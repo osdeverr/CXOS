@@ -8,6 +8,7 @@
 
 #ifndef tar_header_h
 #define tar_header_h
+#include <stddef.h>
 
 namespace cx::os::kernel::fs::tar
 {
@@ -22,16 +23,42 @@ namespace cx::os::kernel::fs::tar
         NamedPipe = '6'
     };
     
+    template<size_t Length, size_t Base>
+    class TarStringifiedNumber
+    {
+    public:
+        size_t Get() const
+        {
+            unsigned int result = 0;
+            unsigned int j;
+            unsigned int count = 1;
+            
+            for (j = Length - 1; j > 0; j--, count *= Base)
+                result += ((_str[j - 1] - '0') * count);
+            
+            return result;
+        }
+        
+    private:
+        char _str[Length];
+    };
+        
+    template<size_t Length>
+    using TarDecimal = TarStringifiedNumber<Length, 10>;
+        
+    template<size_t Length>
+    using TarOctal = TarStringifiedNumber<Length, 8>;
+    
     struct TarHeader
     {
         char file_name[100];
         char file_mode[8];
         
-        char owner_uid[8];
-        char owner_gid[8];
+        TarDecimal<8> owner_uid;
+        TarDecimal<8> owner_gid;
         
-        char file_size[12]; // Octal
-        char file_time[12]; // Octal
+        TarOctal<12> file_size; // Octal
+        TarOctal<12> file_time; // Octal
         
         char checksum[8];
         
@@ -51,6 +78,16 @@ namespace cx::os::kernel::fs::tar
         char file_prefix[155];
         
         char pad[12];
+        
+        void* GetFileContents()
+        {
+            return (this + 1);
+        }
+        
+        const void* GetFileContents() const
+        {
+            return (this + 1);
+        }
     };
 }
 

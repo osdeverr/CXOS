@@ -35,6 +35,38 @@ namespace cx::os::kernel::fs
         
         virtual FsCharacterByte ReadByte() = 0;
         virtual void WriteByte(FsCharacterByte) = 0;
+        
+        size_t ReadBuffer(void* buffer, size_t size)
+        {
+            auto buf = reinterpret_cast<unsigned char*>(buffer);
+            size_t i;
+            
+            for(i = 0; i < size; i++, buf++)
+            {
+                auto byte = ReadByte();
+                if(IsEOF())
+                    break;
+                
+                *buf = (unsigned char) byte;
+            }
+            
+            return i;
+        }
+        
+        size_t WriteBuffer(const void* buffer, size_t size)
+        {
+            auto buf = reinterpret_cast<const unsigned char*>(buffer);
+            size_t i;
+            
+            for(i = 0; i < size; i++, buf++)
+            {
+                WriteByte(*buf);
+                if(IsEOF())
+                    break;
+            }
+            
+            return i;
+        }
     };
 }
 
