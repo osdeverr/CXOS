@@ -34,13 +34,13 @@ void cx::os::kernel::memory::DumpMemoryRegions()
 void* cx::os::kernel::memory::AllocateMemory(size_t size)
 {    
     // Allocating sizes <= sizeof(MemoryRegion) destroys structures if we don't do this
-    size += (size % sizeof(MemoryRegion));
+    size += sizeof(MemoryRegion);
     
     for(auto& region : detail::gTheMemoryRegions)
     {
         if(region.free && region.size >= size)
         {
-            // kprintf("AllocateMemory (n=%d): Region @ 0x%08X (n=0x%08X) -> free=%d\n", size, &region, region.size, (int) region.free);
+            // kprintf("AllocateMemory (s=%d): Region @ 0x%08X (l=0x%08X) -> free=%d\n", size, &region, region.size, (int) region.free);
             region.free = false;
             
             auto data = (&region + 1);
@@ -61,7 +61,7 @@ void cx::os::kernel::memory::FreeMemory(void* addr)
 {
     auto region = reinterpret_cast<MemoryRegion*>((char*) addr - sizeof(MemoryRegion));
     region->free = true;
-    // kprintf("FreeMemory: Region @ 0x%08X (size=0x%08X bytes) -> free=%d\n", region, region->size, (int) region->free);
+    // kprintf("FreeMemory: Region @ 0x%08X (s=0x%08X) -> free=%d\n", region, region->size, (int) region->free);
 }
  
 extern "C" void* malloc(int size)
