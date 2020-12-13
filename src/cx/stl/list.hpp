@@ -123,6 +123,15 @@ namespace cx::std
             other._anchor = nullptr;
         }
         
+        list& operator=(const list& other)
+        {
+            _size = other._size;
+            for(auto& value : other)
+                push_back(value);
+            
+            return *this;
+        }
+        
         ~list()
         {
             if(_anchor)
