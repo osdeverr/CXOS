@@ -10,6 +10,7 @@
 #define fs_file_h
 #include <cx/os/kernel/fs/fs_node_impl.hpp>
 #include <cx/os/kernel/fs/fs_file_stream.hpp>
+#include <cx/os/kernel/kprintf.hpp>
 
 #include <string.h>
 

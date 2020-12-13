@@ -38,7 +38,7 @@ namespace cx::os::kernel::fs
         
         FsStreamDescriptor GetStreamDescriptor() const
         {
-            return 5; // TODO
+            return _fd; // TODO
         }
         
         bool IsEOF() const
@@ -109,6 +109,8 @@ namespace cx::os::kernel::fs
         }
         
     private:
+        FsStreamDescriptor _fd = GetAvailableStreamDescriptor();
+        
         void* _data;
         size_t _size;
         

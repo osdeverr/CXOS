@@ -13,7 +13,8 @@
 
 namespace cx::os::kernel::fs
 {
-    using FsStreamDescriptor = int;
+    using FsStreamDescriptor = int;    
+    FsStreamDescriptor GetAvailableStreamDescriptor();
     
     class IFsBasicStream
     {

@@ -267,7 +267,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
             
             virtual FsStreamDescriptor GetStreamDescriptor() const
             {
-                return 12;
+                return _fd;
             }
             
             virtual bool IsEOF() const
@@ -292,6 +292,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
             }
             
         private:
+            FsStreamDescriptor _fd = fs::GetAvailableStreamDescriptor();
             bool _open = true;
         };
         
@@ -304,6 +305,7 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
             
             std::shared_ptr<IFsCharacterStream> OpenDeviceImpl()
             {
+                kprintf("VgaTtyDevice.OpenDeviceImpl() @ 0x%08X\n", this);
                 return std::make_shared<VgaTtyStream>();
             }
         };
@@ -379,22 +381,23 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         
         printout(root, 1);
         
-        if(auto stream = tty->OpenCharacterStream())
+        auto tty0 = fs::OpenCharacterStream("/dev/tty0");
+        auto hosts = fs::OpenBlockStream("/etc/hosts");
+        kprintf("tty0=0x%08X | hosts=0x%08X\n", tty0.get(), hosts.get());
+        
+        if(tty0 && hosts)
         {
-            printf("Opened file: fd=%d @ 0x%08X | Open=%d\n", (int) stream->GetStreamDescriptor(), stream.get(), stream->IsOpen());
+            printf("Opened file: fd=%d @ 0x%08X | Open=%d\n", (int) hosts->GetStreamDescriptor(), hosts.get(), hosts->IsOpen());
             int c = 0;
-            while((c = stream->ReadByte()) != -1)
+            while((c = hosts->ReadByte()) != -1)
             {
-                if(c == '\b')
-                    printf("\b \b");
-                else
-                    stream->WriteByte((char) c);
+                tty0->WriteByte((char) c);
             }
             printf("[EOF]\n");
         }
         else
         {
-            kprintf("\e[91m ! File could NOT be opened.\e[0m");
+            kprintf("\e[91m ! File could NOT be opened.\e[0m\n");
         }
     }
     
