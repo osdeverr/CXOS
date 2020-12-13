@@ -150,13 +150,16 @@ inline char* strtok(char *s, const char *delim)
     }
     return token;
 }
-inline int memcmp(const void *s1, const void *s2, size_t n)                    /* Length to compare. */
+inline int memcmp(const void *_s1, const void *_s2, size_t n)                    /* Length to compare. */
 {
     unsigned char u1, u2;
     
+    auto s1 = (const unsigned char*) _s1;
+    auto s2 = (const unsigned char*) _s2;
+    
     for ( ; n-- ; s1++, s2++) {
-        u1 = * (unsigned char *) s1;
-        u2 = * (unsigned char *) s2;
+        u1 = *s1;
+        u2 = *s2;
         if ( u1 != u2) {
             return (u1-u2);
         }

@@ -68,7 +68,7 @@ namespace cx::os::kernel::fs
         }
         
     private:
-        void* _fdata;
+        char* _fdata;
         size_t _fsize;
         
         bool _open = false;
