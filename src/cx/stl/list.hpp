@@ -8,6 +8,7 @@
 
 #ifndef list_h
 #define list_h
+#include <printf.h>
 
 namespace cx::std
 {
@@ -108,12 +109,16 @@ namespace cx::std
         
         list(const list& other)
         {
+            _size = other._size;
             for(auto& value : other)
                 push_back(value);
         }
         
         list(list&& other)
         {
+            _size = other._size;
+            other._size = 0;
+            
             this->_anchor = other._anchor;
             other._anchor = nullptr;
         }
@@ -144,8 +149,15 @@ namespace cx::std
             return {nullptr};
         }
         
-        iterator push_back(const T& value)
+        size_t size() const
         {
+            return _size;
+        }
+        
+        iterator push_back(const T& value)
+        {            
+            _size++;
+            
             if(!_anchor)
             {
                 CreateAnchor(value);
@@ -172,6 +184,7 @@ namespace cx::std
                 _anchor = node;
             }
             
+            _size++;
             return _anchor;
         }
         
@@ -206,6 +219,7 @@ namespace cx::std
                     node->next = nullptr;
                     
                     delete node;
+                    _size--;
                     
                     return;
                 }
@@ -214,6 +228,7 @@ namespace cx::std
         
     private:
         detail::ListNode<T>* _anchor = nullptr;
+        size_t _size = 0;
         
         void CreateAnchor(const T& value)
         {

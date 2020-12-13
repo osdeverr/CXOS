@@ -17,6 +17,9 @@ namespace cx::os::kernel::fs
 {
     FsDirectory& GetFilesystemRoot();
     
+    std::shared_ptr<FsDirectory> CreateDirectory(const char* path);    
+    std::shared_ptr<FsNode> FindFilesystemNode(const char* path);
+    
     std::shared_ptr<IFsCharacterStream> OpenCharacterStream(const char* path);
     std::shared_ptr<IFsBlockStream> OpenBlockStream(const char* path);
     

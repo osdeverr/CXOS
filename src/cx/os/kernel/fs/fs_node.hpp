@@ -27,9 +27,19 @@ namespace cx::os::kernel::fs
             strcpy(_name, name);
         }
         
+        FsNodeName(const char* name, size_t length)
+        {
+            strncpy(_name, name, length);
+        }
+        
         const char* AsCharPtr() const
         {
             return _name;
+        }
+        
+        bool operator==(const FsNodeName& other) const
+        {
+            return !strcmp(_name, other._name);
         }
         
     private:

@@ -34,6 +34,15 @@ namespace cx::os::kernel::fs
             // TODO no list remove yet
         }
         
+        std::shared_ptr<FsNode> FindDirectoryEntry(FsNodeName name)
+        {
+            for(auto& node : _nodes)
+                if(node->GetName() == name)
+                    return node;
+            
+            return nullptr;
+        }
+        
         const FsNodeList& GetDirectoryEntries() const
         {
             return _nodes;

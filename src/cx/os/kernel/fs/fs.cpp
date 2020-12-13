@@ -29,3 +29,9 @@ cx::os::kernel::fs::FsDirectory& cx::os::kernel::fs::GetFilesystemRoot()
 {
     return detail::gTheFsRoot;
 }
+
+cx::std::shared_ptr<cx::os::kernel::fs::FsNode> FindFilesystemNode(const char* path)
+{
+    
+    return nullptr;
+}
