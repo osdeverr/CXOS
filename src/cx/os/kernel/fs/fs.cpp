@@ -66,8 +66,16 @@ cx::std::shared_ptr<cx::os::kernel::fs::FsNode> cx::os::kernel::fs::FindFilesyst
         auto node = dir->FindDirectoryEntry(name);
         
         dir = node->As<fs::FsDirectory>();
-        if(!dir)
+        if(!node)
+        {
             return nullptr;
+        }
+        else
+        {
+            dir = node->As<fs::FsDirectory>();
+            if(!dir)
+                return nullptr;
+        }
     }
     
     return dir->FindDirectoryEntry(last);
@@ -78,6 +86,14 @@ cx::std::shared_ptr<cx::os::kernel::fs::IFsCharacterStream> cx::os::kernel::fs::
     if(auto node = FindFilesystemNode(path))
     {
         auto stream = node->OpenCharacterStream();
+        
+        // Hangs the system if we don't do this: blame static constructors..
+        if(!detail::gOpenedFilesInitialized)
+        {
+            detail::gOpenedFiles = {};
+            detail::gOpenedFilesInitialized = true;
+        }
+        
         detail::gOpenedFiles.push_back({stream->GetStreamDescriptor(), stream, nullptr});
         return stream;
     }
