@@ -389,10 +389,10 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         {
             printf("Opened file: fd=%d @ 0x%08X | Open=%d\n", (int) hosts->GetStreamDescriptor(), hosts.get(), hosts->IsOpen());
             int c = 0;
+            
             while((c = hosts->ReadByte()) != -1)
-            {
                 tty0->WriteByte((char) c);
-            }
+                
             printf("[EOF]\n");
         }
         else
