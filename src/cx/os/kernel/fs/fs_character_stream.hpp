@@ -12,6 +12,7 @@
 #include <stddef.h>
 
 #include <cx/os/kernel/fs/fs_basic_stream.hpp>
+#include <cx/stl/optional.hpp>
 
 namespace cx::os::kernel::fs
 {
@@ -66,6 +67,16 @@ namespace cx::os::kernel::fs
             }
             
             return i;
+        }
+        
+        template<class T>
+        std::optional<T> Read()
+        {
+            char buf[sizeof(T)];
+            if(ReadBuffer(buf, sizeof buf) < sizeof buf)
+                return std::nullopt;
+            else
+                return *(T*) buf;
         }
     };
 }

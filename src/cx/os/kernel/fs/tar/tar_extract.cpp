@@ -57,7 +57,7 @@ bool cx::os::kernel::fs::tar::ExtractTarballToDirectory(TarFile file, FsDirector
             i++;
             
             auto node = dir->FindDirectoryEntry(name);
-            // kprintf("Path stuffs: ent='%s' in '%s'; node=0x%08X\n", name.AsCharPtr(), dir->GetName().AsCharPtr(), node);
+            kprintf("Path stuffs: ent='%s' in '%s'; node=0x%08X\n", name.AsCharPtr(), dir->GetName().AsCharPtr(), node);
             
             dir = node->As<fs::FsDirectory>();
         }
@@ -67,11 +67,11 @@ bool cx::os::kernel::fs::tar::ExtractTarballToDirectory(TarFile file, FsDirector
         switch(header->file_type)
         {
             case TarFileType::Regular:
-                // kprintf("Path stuffs: Adding FsFile @ '%s'\n", last.AsCharPtr());
+                kprintf("Path stuffs: Adding FsFile @ '%s'\n", last.AsCharPtr());
                 dir->AddDirectoryEntry(std::make_shared<fs::FsFile>(last, header->GetFileContents(), size));
                 break;
             case TarFileType::Directory:
-                // kprintf("Path stuffs: Adding FsDirectory @ '%s'\n", last.AsCharPtr());
+                kprintf("Path stuffs: Adding FsDirectory @ '%s'\n", last.AsCharPtr());
                 dir->AddDirectoryEntry(std::make_shared<fs::FsDirectory>(last));
                 break;
                 

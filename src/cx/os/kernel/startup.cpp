@@ -49,6 +49,9 @@
 #include <cx/os/kernel/fs/tar/tar_extract.hpp>
 #include <cx/os/kernel/initrd_tar.hpp>
 
+#include <cx/os/kernel/exec/elf/elf_file_header.hpp>
+#include <cx/os/kernel/exec/elf/elf_program_header.hpp>
+
 #include <printf.h>
 #include <string.h>
 
@@ -398,6 +401,54 @@ void cx::os::kernel::BeginKernelStartup(const multiboot_info_t& boot_info)
         else
         {
             kprintf("\e[91m ! File could NOT be opened.\e[0m\n");
+        }
+    }
+    
+    {
+        using namespace exec::elf;
+        
+        if(auto file = fs::OpenBlockStream("/bin/console-test"))
+        {
+            kprintf("Opened binary from /bin/console-test\n");
+            auto hdr_base = file->Read<ElfBaseFileHeader>();
+            auto hdr32 = file->Read<Elf32FileHeader>();
+            
+            if(!hdr_base || !hdr32)
+                kprintf("\e[91m Invalid ELF file!\e[0m\n");
+            
+            kprintf("ELF signature: %c%c%c%c\n", hdr_base->magic[0], hdr_base->magic[1], hdr_base->magic[2], hdr_base->magic[3]);
+            kprintf("PH located @ 0x%08X\n", hdr32->ph_offset);
+            
+            file->Seek(fs::FsSeekMode::FromStart, hdr32->ph_offset);
+            
+            kprintf("File type: %d\n", (int) hdr32->file_type);
+            kprintf("ISet: %d\n", (int) hdr32->instruction_set);
+            kprintf("Entry: 0x%08X\n", (int) hdr32->entry_point);
+            kprintf("%d program headers (size=[f%d><k%d])\n", (int) hdr32->ph_entry_num, (int) hdr32->ph_entry_size, sizeof(Elf32ProgramHeader));
+            
+            for(auto i = 0; i < hdr32->ph_entry_num; i++)
+            {
+                auto ph = file->Read<Elf32ProgramHeader>();
+                kprintf("F@0x%08X => M@0x%08X (type=%d, file_size=%d, mem_size=%d)\n", ph->offset, ph->address, (int) ph->type, ph->file_size, ph->mem_size);
+                
+                if(ph->type == ElfSegmentType::StaticLoad)
+                {
+                    auto old_pos = file->Tell();
+                    auto buf = malloc(ph->file_size);
+                    
+                    file->Seek(fs::FsSeekMode::FromStart, ph->offset);
+                    file->ReadBuffer(buf, ph->file_size);
+                    
+                    memset((void*) ph->address, 0, ph->mem_size);
+                    memcpy((void*) ph->address, buf, ph->file_size);
+                    
+                    free(buf);
+                    file->Seek(fs::FsSeekMode::FromStart, old_pos);
+                }
+            }
+            kprintf("Proceeding to load!");
+            
+            asm("jmp %0" ::"g"(hdr32->entry_point));
         }
     }
     

@@ -36,7 +36,7 @@ void cx::os::kernel::memory::DumpMemoryRegions()
 void* cx::os::kernel::memory::AllocateMemory(size_t size)
 {    
     // Allocating sizes <= sizeof(MemoryRegion) destroys structures if we don't do this
-    size += sizeof(MemoryRegion);
+    size += sizeof(MemoryRegion) * 8;
     
     for(auto& region : detail::gTheMemoryRegions)
     {

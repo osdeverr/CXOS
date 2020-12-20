@@ -1,18 +1,18 @@
 //
-//  page_entry.hpp
+//  mmu_page.hpp
 //  Kernel
 //
 //  Created by Nikita Ivanov on 08.12.2020.
 //  Copyright © 2020 CXOS Team. All rights reserved.
 //
 
-#ifndef page_entry_h
-#define page_entry_h
-#include <stdint.hpp>
+#ifndef mmu_page_h
+#define mmu_page_h
+#include <stdint.h>
 
 namespace cx::os::kernel::paging
 {
-    struct PageEntry
+    struct MmuPage
     {
         bool present : 1;
         bool read_write : 1;
@@ -28,6 +28,9 @@ namespace cx::os::kernel::paging
         
         uint32_t address : 20;
     };
+    
+    using MmuPageTable = MmuPage[1024];
+    using MmuPageDirectory = MmuPage[1024];
 }
 
-#endif /* page_entry_h */
+#endif /* mmu_page_h */
