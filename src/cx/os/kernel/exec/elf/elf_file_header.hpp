@@ -21,8 +21,9 @@ namespace cx::os::kernel::exec::elf
         ElfCpuByteOrder byte_order;
         uint8_t header_version;
         ElfSystemAbi abi_type;
+        uint8_t abi_version;
         
-        uint64_t padding;
+        uint8_t reserved[7];
     };
     
     template<class AddrT>
